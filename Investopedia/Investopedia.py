@@ -16,3 +16,4 @@ for bought in bought_securities:
     print(bought.symbol)
     print(bought.description)
     print(bought.purchase_price)
+
