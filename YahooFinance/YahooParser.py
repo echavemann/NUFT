@@ -19,7 +19,8 @@ spreadsheetURL = 'URL'
 service = build('sheets', 'v4', credentials=creds)
 
 #Import from page one of the sheet.
-watchlist = {}
+watchlist = service.spreadsheets().values().get(spreadsheetId=spreadsheetURL, range = '!A').execute()
+watchlist = watchlist['values']
 
 #YF Overview
 msft = yf.Ticker("MSFT")
@@ -41,46 +42,14 @@ for stock in watchlist:
     tick = yf.Ticker(stock)
     stack = tick.info
     #store stack values
-    
-    #Insert date logic
-    try:
+    #Test date
+    if today != date.today():
+        today = date.today()
         new_sheet = {'requests': [
                 {'addSheet':{'properties':{'title':date.today()}}}]}
-        res = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()
-    except:
-            sheet = service.spreadsheets()
-            spreadsheet = service.spreadsheets().get(spreadsheetId = spreadsheetURL).execute()
-            sheet_id = None
-            for _sheet in spreadsheet['sheets']:
-                if _sheet['properties']['title']== today :
-                    sheet_id = _sheet['properties']['sheetid']
-                
+    service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()     
     j = '!' + 'i'
-    sheet.values().update(spreadsheetId = spreadsheetURL, range = today + j, valueInputOption = 'USER_ENTERED', body = {stack}).execute
-#Spreadsheet logic in progress. 
+    service.spreadsheets().values().update(spreadsheetId = spreadsheetURL, range = today + j, valueInputOption = 'USER_ENTERED', body = {stack}).execute()
+    i+=1
 
-
-#sheet logic - this tells it to compute a new one if the date has changed since the last minute. 
-try:
-    new_sheet = {'requests': [
-            {'addSheet':{'properties':{'title':date.today()}}}]}
-    res = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()
-except:
-        sheet = service.spreadsheets()
-        spreadsheet = service.spreadsheets().get(spreadsheetId = spreadsheetURL).execute()
-        sheet_id = None
-        for _sheet in spreadsheet['sheets']:
-            if _sheet['properties']['title']== today :
-                sheet_id = _sheet['properties']['sheetid']
-
-docx = 0
-for _sheet in spreadsheet['sheets']:
-    if _sheet['properties']['title']== today :
-        sheet_id = _sheet['properties']['sheetid']
-        docx=1
-        break
-        
-if docx!=1:
-    new_sheet = {'requests': [
-            {'addSheet':{'properties':{'title':date.today()}}}]}
     
