@@ -73,5 +73,14 @@ except:
             if _sheet['properties']['title']== today :
                 sheet_id = _sheet['properties']['sheetid']
 
-
-
+docx = 0
+for _sheet in spreadsheet['sheets']:
+    if _sheet['properties']['title']== today :
+        sheet_id = _sheet['properties']['sheetid']
+        docx=1
+        break
+        
+if docx!=1:
+    new_sheet = {'requests': [
+            {'addSheet':{'properties':{'title':date.today()}}}]}
+    
