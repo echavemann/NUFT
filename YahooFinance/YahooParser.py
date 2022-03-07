@@ -1,10 +1,13 @@
 import requests
 import yfinance as yf
+from pprint import pprint
 from datetime import date
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+#i is counter for each day
+i = 0
 
 #Sheet comfig
 url = "https://yfapi.net/v6/finance/quote"
@@ -30,14 +33,32 @@ msft.history() #Args:
     #auto_adjust (adjusts, defaults to true)
     #actions (bools dividends :)
     #Process: For each stock in our dict, call info. Rate sort those into our sheets. Repeat. 
+
+#loop value
+today = ('1969-12-12')
+#Y-M-D
 for stock in watchlist:
     tick = yf.Ticker(stock)
     stack = tick.info
     #store stack values
     
+    #Insert date logic
+    try:
+        new_sheet = {'requests': [
+                {'addSheet':{'properties':{'title':date.today()}}}]}
+        res = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()
+    except:
+            sheet = service.spreadsheets()
+            spreadsheet = service.spreadsheets().get(spreadsheetId = spreadsheetURL).execute()
+            sheet_id = None
+            for _sheet in spreadsheet['sheets']:
+                if _sheet['properties']['title']== today :
+                    sheet_id = _sheet['properties']['sheetid']
+                
+    j = '!' + 'i'
+    sheet.values().update(spreadsheetId = spreadsheetURL, range = today + j, valueInputOption = 'USER_ENTERED', body = {stack}).execute
 #Spreadsheet logic in progress. 
-today = ('1969-12-12')
-#Y-M-D
+
 
 #sheet logic - this tells it to compute a new one if the date has changed since the last minute. 
 try:
@@ -51,6 +72,6 @@ except:
         for _sheet in spreadsheet['sheets']:
             if _sheet['properties']['title']== today :
                 sheet_id = _sheet['properties']['sheetid']
-                
+
 
 
