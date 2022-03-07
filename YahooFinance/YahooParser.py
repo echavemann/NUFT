@@ -40,11 +40,17 @@ today = ('1969-12-12')
 #Y-M-D
 
 #sheet logic - this tells it to compute a new one if the date has changed since the last minute. 
-if today != date.today():
+try:
     new_sheet = {'requests': [
-                {'addSheet':{'properties':{'title':date.today()}}}
-    ]}
-    today = date.today()
+            {'addSheet':{'properties':{'title':date.today()}}}]}
     res = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()
+except:
+        sheet = service.spreadsheets()
+        spreadsheet = service.spreadsheets().get(spreadsheetId = spreadsheetURL).execute()
+        sheet_id = None
+        for _sheet in spreadsheet['sheets']:
+            if _sheet['properties']['title']== today :
+                sheet_id = _sheet['properties']['sheetid']
+                
 
 
