@@ -40,7 +40,7 @@ msft.history() #Args:
 #loop value
 today = ('1969-12-12')
 #Y-M-D
-while true:
+while True:
     for stock in watchlist:
         tick = yf.Ticker(stock)
         stack = tick.info
