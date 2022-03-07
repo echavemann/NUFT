@@ -1,7 +1,9 @@
 import requests
 import yfinance as yf
+import time
 from pprint import pprint
 from datetime import date
+import datetime
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -38,18 +40,21 @@ msft.history() #Args:
 #loop value
 today = ('1969-12-12')
 #Y-M-D
-for stock in watchlist:
-    tick = yf.Ticker(stock)
-    stack = tick.info
+while true:
+    for stock in watchlist:
+        tick = yf.Ticker(stock)
+        stack = tick.info
     #store stack values
     #Test date
-    if today != date.today():
-        today = date.today()
-        new_sheet = {'requests': [
-                {'addSheet':{'properties':{'title':date.today()}}}]}
-    service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()     
-    j = '!' + 'i'
-    service.spreadsheets().values().update(spreadsheetId = spreadsheetURL, range = today + j, valueInputOption = 'USER_ENTERED', body = {stack}).execute()
-    i+=1
+        if today != date.today():
+            today = date.today()
+            new_sheet = {'requests': [
+                    {'addSheet':{'properties':{'title':date.today()}}}]}
+        service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()     
+        j = '!' + 'i'
+        service.spreadsheets().values().update(spreadsheetId = spreadsheetURL, range = today + j, valueInputOption = 'USER_ENTERED', body = {stack}).execute()
+        i+=1
+        sleeptime = 60-datetime.utcnow().second
+        time.sleep(sleeptime)
 
     
