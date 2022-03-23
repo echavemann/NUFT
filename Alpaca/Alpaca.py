@@ -14,14 +14,14 @@ APCA_API_BASE_URL = 'https://paper.api.alpaca.markets'
 api = tradeapi.REST(key_id=APCA_API_KEY_ID, secret_key=APCA_API_SECRET_KEY, base_url=APCA_API_BASE_URL, api_version= 'v2')
 account = api.get_account()
 
-def marketorder (ticker, qty):
+def marketorder (ticker, qty,side):
     qty = str(qty)
     if '$' in qty:
         qty = qty.remove('$')
         tradeapi.submit_order(
             symbol= ticker,
             notional = qty,
-            side = 'buy',
+            side = side,
             type = 'market',
             time_in_force = 'day',
         )
@@ -30,7 +30,7 @@ def marketorder (ticker, qty):
         tradeapi.submit_order(
             symbol = ticker,
             qty=qty,
-            side='buy',
+            side=side,
             type = 'market',
             time_in_force = 'day',
     )
