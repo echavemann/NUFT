@@ -6,6 +6,11 @@ import alpaca_trade_api as tradeapi
 import logging
 import matplotlib as plt
 import os
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from google.oauth2 import oauth
+
 
 APCA_API_KEY_ID = 'key'
 APCA_API_SECRET_KEY= 'secret'
@@ -40,4 +45,13 @@ def outpositions():
     for position in portfolio:
         print("{} shares of {}".format(position.qty,position.symbol))
 
+#Google Setup Stuff
+
+
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+SERVICE_ACCOUNT_FILE = ('key.json')
+creds = None
+creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+spreadsheetURL = 'URL'
+service = build('sheets', 'v4', credentials=creds)
 
