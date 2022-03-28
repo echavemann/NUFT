@@ -10,7 +10,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 #i is counter for each day
 i = 0
-
+#This loop is dumb do it again      
 #Sheet comfig
 url = "https://yfapi.net/v6/finance/quote"
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
