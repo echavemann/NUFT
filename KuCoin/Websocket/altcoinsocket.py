@@ -3,8 +3,8 @@ import asyncio
 from kucoin.client import Client
 from kucoin.asyncio import KucoinSocketManager
 
-api_key = '623b392092e1bc0001023e24'
-api_secret = 'b6dbeac9-7cab-4077-9b48-2c99e5fd4f67'
+api_key = ''
+api_secret = ''
 api_passphrase = '694207'
 
 async def main():
