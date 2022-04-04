@@ -7,6 +7,7 @@ api_key = ''
 api_secret = ''
 api_passphrase = ''
 
+key = {}
 async def main():
     global loop
         #This needs to be a dictionary powered by key piars
