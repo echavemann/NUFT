@@ -5,7 +5,7 @@ from kucoin.asyncio import KucoinSocketManager
 
 api_key = ''
 api_secret = ''
-api_passphrase = '694207'
+api_passphrase = ''
 
 async def main():
     global loop
