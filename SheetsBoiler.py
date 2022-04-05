@@ -61,10 +61,10 @@ async def on_message(message):
     if message.content.startswith('$springform'):
         await message.channel.send('https://' + 'docs.google.com/forms/d/e/1FAIpQLSf78oBbq1z7UhUlqBWh8qemwc2fWpiKUMMegWdqYM7AIr6xSg/alreadyresponded')
     
-    if message.content.startswith('$springform'):
+    if message.content.startswith('$project'):
         await message.channel.send('https://' + 'github.com/users/echavemann/projects/3/views/1')
 
     if message.content.startswith('$help'):
-        await message.channel.send()
+        await message.channel.send('help')
 
 client.run('')
