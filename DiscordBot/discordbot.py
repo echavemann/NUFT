@@ -1,19 +1,18 @@
-import os
 import discord
-from dotenv import load_dotenv
 
-TOKEN = ''
-GUILD = ''
-load_dotenv()
 client = discord.Client()
 
 @client.event
 async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
+    print('We have logged in as {0.user}'.format(client))
 
-    print(f'{client.user} has connected to Discord!')
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
-client.run(TOKEN)
+    if message.content.startswith('$hello'):
+        await message.channel.send('Hello!')
+
+client.run('1Xwrkx1DEE_78wCpW5xocmMp4NK1n5utN7murCc9ywJE')
 
