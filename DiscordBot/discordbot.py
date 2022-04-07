@@ -2,10 +2,10 @@ import discord
 import urllib.parse
 import discord
 import logging
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
+# from google.auth.transport.requests import Request
+# from google.oauth2.credentials import Credentials
+# from googleapiclient.discovery import build
+# from google.oauth2 import service_account
 
 #Here's the pip for this!
 #pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
@@ -55,10 +55,10 @@ async def on_message(message):
     if message.content.startswith('$last'):
         await message.channel.send('https://' + 'docs.google.com/document/d/1S7JFwrTACRTkfaJqQ69xDT9jvn1R2GqJDikouw7MBoc/edit')
 
-    if message.content.startswith('$rosters'):
+    if message.content.startswith('$roster'):
         await message.channel.send('https://' + 'docs.google.com/spreadsheets/d/1yZILT3q-o7nBSn2yBpMWeaJIS8FeTAxmjZIFapTIe74/edit#gid=0')
 
-    if message.content.startswith('$springform'):
+    if message.content.startswith('$form'):
         await message.channel.send('https://' + 'docs.google.com/forms/d/e/1FAIpQLSf78oBbq1z7UhUlqBWh8qemwc2fWpiKUMMegWdqYM7AIr6xSg/alreadyresponded')
     
     if message.content.startswith('$project'):
