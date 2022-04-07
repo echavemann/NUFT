@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
 headers = {
-    'X-CMC_PRO_API_KEY' : 'e7a3971f-2c4f-4e03-bb13-5400dcded14c',
+    'X-CMC_PRO_API_KEY' : '',
     'Accepts' : 'Application/json'
 }
 
