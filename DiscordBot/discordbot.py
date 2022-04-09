@@ -2,6 +2,7 @@ import discord
 import urllib.parse
 import discord
 import logging
+import time
 # from google.auth.transport.requests import Request
 # from google.oauth2.credentials import Credentials
 # from googleapiclient.discovery import build
@@ -26,7 +27,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 client = discord.Client()
-
+start = time.time()
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -35,13 +36,19 @@ async def on_ready():
 async def on_message(message):
     googleDrive = urllib.parse.quote('drive.google.com/drive/u/0/folders/1CCP-LOptbYmCFPcCLKkbacRMxh7sKZaW')
     GitHub = urllib.parse.quote('github.com/echavemann/nuft')
-
+    helpsheet = urllib.parse.quote('docs.google.com/spreadsheets/d/1Xwrkx1DEE_78wCpW5xocmMp4NK1n5utN7murCc9ywJE')
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
-        await message.channel.send('你好!')
+    if message.content.startswith('$ping'):
+        end = time.time()
+        uptime = end-start
+        uptime = uptime // 1
+        uptime = str(uptime)
+        await message.channel.send('pong! Bot Uptime: ' + uptime + ' seconds')
+        
+    if message.content.startswith('$ethan'):
+        await message.channel.send('instagram.com/echavemann')
 
     if message.content.startswith('$drive'):
         await message.channel.send('https://' + googleDrive)
@@ -49,8 +56,11 @@ async def on_message(message):
     if message.content.startswith('$github'):
         await message.channel.send('https://' + GitHub)
 
+    if message.content.startswith('$status'):
+        await message.channel.send('System Uptime:' + '0 hours, 0 minutes, 0 seconds.')
+
     if message.content.startswith('$next'):
-        await message.channel.send('We do not have any meeting times yet')
+        await message.channel.send('Ping ethan lmao')
 
     if message.content.startswith('$last'):
         await message.channel.send('https://' + 'docs.google.com/document/d/1S7JFwrTACRTkfaJqQ69xDT9jvn1R2GqJDikouw7MBoc/edit')
@@ -65,6 +75,6 @@ async def on_message(message):
         await message.channel.send('https://' + 'github.com/users/echavemann/projects/3/views/1')
 
     if message.content.startswith('$help'):
-        await message.channel.send('help')
+        await message.channel.send('https://' + helpsheet)
 
 client.run('')
