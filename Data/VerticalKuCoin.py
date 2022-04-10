@@ -10,26 +10,44 @@ api_key = ''
 api_secret = ''
 api_passphrase = ''
 
-coins = ['BTC-USDT', 'ETH-USDT']
+# coins = ['BTC-USDT', 'ETH-USDT']
+coins = ['BTC-USDT']
 
 async def main():
     global loop
         #This needs to be a dictionary powered by key piars
     async def handle_evt(msg):
+        # coin = msg['subject']
+        # if coin in coins:
+        #     rows = [[f'got {coin} information: {msg["symbol"]}'],
+        #             [f'got {coin} information: {msg["data"]["price"]}']]
+
+        #     df = pd.DataFrame(rows)
+        #     df.to_csv('/Users/frank/NUFT/KuCoin/coinData.csv')
+            
+        #     # From data frame to CSV
+        #     fields = ['Coin', 'Price']
+        #     filename = "coin_data.csv"
+        #     with open(filename, 'w') as csvfile:
+        #         csvwriter = csv.writer(csvfile)
+        #         csvwriter.writerow(fields)
+        #         csvwriter.writerows(msg["data"])
+        #         #print(f'got {coin} information: {msg["data"]}')
+        # val = (coin, msg["data"])
+        # #Store val in S3
         coin = msg['subject']
         if coin in coins:
-            rows = f'got {coin} information: {msg["data"]["price"]}'
+            # rows = f'got {coin} information: {msg["data"]["price"]}'
             # From data frame to CSV
             fields = ['Coin', 'Price']
             filename = "coin_data.csv"
             with open(filename, 'w') as csvfile:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerow(fields)
-                csvwriter.writerows(msg["data"]['price'])
-                #print(f'got {coin} information: {msg["data"]}')
+                csvwriter.writerow([msg["data"]['price']])
+            # print(f'got {coin} information: {msg["data"]}')
         val = (coin, msg["data"])
         #Store val in S3
-        
         
 
     client = Client(api_key, api_secret, api_passphrase)
