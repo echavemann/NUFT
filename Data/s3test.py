@@ -17,10 +17,11 @@ def upload(name, bucket):
 def download(name, bucket,new_name):
     client.download_file(bucket, name, new_name)
     
-def sync(source, destination, bucket):
+def downsync(source, bucket):
     download(source, bucket, 'temp')
-    shutil.copyfile(source, 'temp')
-    upload(destination, bucket)
+    shutil.copyfile('temp', source)
     os.remove('temp')
-    
-sync('s3test.py', 's3test.py', 'nuft')
+
+def upsync(source, bucket):
+    download(source, bucket, 'temp')
+    upload(source, bucket)
