@@ -11,36 +11,29 @@ api_secret = ''
 api_passphrase = ''
 
 # coins = ['BTC-USDT', 'ETH-USDT']
-coins = ['BTC-USDT']
+
+global lst_of_ticker
+lst_of_ticker = []
+global batchSize
+batchSize = 0
 
 async def main():
     global loop
-        #This needs to be a dictionary powered by key piars
+        #This needs to be a dictionary powered by key piars     
+        # callback function that receives messages from the socket
     async def handle_evt(msg):
-        coin = msg['subject']
-        if coin in coins:
-            # rows = f'got {coin} information: {msg["data"]["price"]}'
-            # From data frame to CSV
-            fields = ['Coin', 'Price', 'bestAsk', 'bestAskSize', 'bestBid', 'bestBidSize', 'size', 'sequence']
-            filename = "coin_data.csv"
-            coinPrice = msg["data"]['price']
-            bestAsk = msg["data"]['bestAsk']
-            bestAskSize = msg["data"]['bestAskSize']
-            bestBid = msg["data"]['bestBid']
-            bestBidSize = msg["data"]['bestBidSize']
-            size = msg["data"]['size']
-            sequence = msg["data"]['sequence']
-            line = [[str(coin), str(coinPrice), str(bestAsk), str(bestAskSize), str(bestBid), str(bestBidSize), str(bestBidSize), str(size), str(sequence)]]
-            print(coin)
-            print(coinPrice)
-            with open(filename, 'w') as csvfile:
-                csvwriter = csv.writer(csvfile)
-                csvwriter.writerow(fields)
-                # csvwriter.writerow([coin,coinPrice, bestAsk, bestAskSize, bestBid, bestBidSize, size, sequence])
-                csvwriter.writerow(line)
-                csvwriter.writerow('\n')
-            print(f'got {coin} information: {msg["data"]}')
-        val = (coin, msg["data"])
+        if msg['topic'] == '/market/ticker:BTC-USDT':
+            # print(f'got BTC-USDT tick:{msg["data"]}')
+            global lst_of_ticker
+            lst_of_ticker.append(msg)
+            if len(lst_of_ticker) >= 100:
+                global batchSize
+                batchSize += 1
+                print(batchSize)
+                df = pd.DataFrame(lst_of_ticker)
+                df.to_csv('KucoinData.csv')
+                df.to_csv('/Users/frank/NUFT/KuCoin/BTCData.csv')
+                lst_of_ticker = []
 
 
         #Store val in S3
@@ -50,7 +43,8 @@ async def main():
 
     ksm = await KucoinSocketManager.create(loop, client, handle_evt)
 
-    await ksm.subscribe('/market/ticker:all')
+    # await ksm.subscribe('/market/ticker:all')
+    await ksm.subscribe('/market/ticker:BTC-USDT')
 
     while True:
         print("sleeping to keep loop open")
