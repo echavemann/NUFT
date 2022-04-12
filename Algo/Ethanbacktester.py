@@ -35,3 +35,4 @@ def marketorder(order,symbol, price, quantity, side):
 #0 - Trade went through
 #1 - Trade failed due to insufficient funds
 #2 - Trade passed partially. 
+#3 - Trade failed due to insufficient funds
