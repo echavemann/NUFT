@@ -4,10 +4,10 @@ import boto3
 import os
 import time
 import shutil
-
+import keyreader
 #aws globals
-KEY = ''
-SECRET = ''
+
+[KEY,SECRET] = keyreader.get_keys('config.yaml', 'aws', ['api_key', 'secret_key'])
 
 #aws client creation using boto3
 client = boto3.client('s3',
