@@ -1,5 +1,8 @@
 Level 1 Crypto Data Storage Protocol:
+Sequence, Best Ask, Size, BestBidSize, Price, Best Ask Size, Best Bid
 
 Level 2 Crypto Data Storage Protocol:
+Sequence, Start, End, Symbol, Asks, Bids
+Asks and bids are formatted: [Price, Size, Sequence].
 
 Level 1 Traditional Data Storage Protocol:
