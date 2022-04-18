@@ -21,6 +21,8 @@ lst_of_ticker = []
 global batchSize
 batchSize = 0
 
+
+client = nuftauth.activate_aws('config.yaml')
 async def main():
 
     # Binance Websocket
