@@ -5,8 +5,8 @@ import os
 import time
 import shutil
 import yaml
-#aws globals
 
+#Building Block
 def get_keys(config_file, service, keys):
     with open(config_file, 'r') as stream:
         cfg = yaml.safe_load(stream)
