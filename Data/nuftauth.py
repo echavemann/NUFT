@@ -28,10 +28,6 @@ def activate_aws(config_file):
                       aws_secret_access_key=SECRET)
     return client
 
-client = activate_aws('config.yaml')
-    
-#[KEY,SECRET] = activate_aws('config.yaml')
-
 
 #uploads the file in path with name name to bucket bucket
 def upload(name, bucket):
