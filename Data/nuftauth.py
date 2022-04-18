@@ -20,6 +20,14 @@ def get_keys(config_file, service, keys):
             raise Exception('Key not found in config file!')       
     return cfg
 
+#Enables all AWS functions 
+def activate_aws(config_file, service, keys):
+    [KEY,SECRET] = get_keys('config.yaml', 'aws', ['api_key', 'secret_key'])
+    client = boto3.client('s3',
+                      aws_access_key_id=KEY,
+                      aws_secret_access_key=SECRET)
+
+
 [KEY,SECRET] = get_keys('config.yaml', 'aws', ['api_key', 'secret_key'])
 
 #aws client creation using boto3
