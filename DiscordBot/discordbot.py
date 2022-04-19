@@ -1,6 +1,5 @@
 import discord
 import urllib.parse
-import discord
 import logging
 import time
 # from google.auth.transport.requests import Request
