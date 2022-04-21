@@ -45,13 +45,15 @@ allocation = 500
 #want to buy 5
 #orderbook only has 3
 #append same order to pendings with 5-3 quantity
-('AAPL','buy',(5-3))
+
 #Market order needs both the orders implemented but also we need to see what it's runtime is like, as well as hooking it up to the websocket data.
 def marketorder(symbol, quantity, side):
     if side == 'buy':
         pass
+        #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
     if side == 'sell':
         pass
+        #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
 #Errors:
 #0 - Trade went through
 #1 - Trade failed due to insufficient funds

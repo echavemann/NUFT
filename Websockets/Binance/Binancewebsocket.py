@@ -1,6 +1,6 @@
 import time
 import pandas
-import s3test
+#import s3test
 
 from binance import ThreadedWebsocketManager
 
@@ -44,7 +44,7 @@ def main():
             df = pandas.DataFrame(current_list_of_dict)
             current_list_of_dict = []
             df.to_csv("TradeData.csv")
-            s3test.upload("TradeData.csv","nuft")
+            ##s3test.upload("TradeData.csv","nuft")
 
     # subscribe to the Binance websocket channels according to the
     # symbols listed above
