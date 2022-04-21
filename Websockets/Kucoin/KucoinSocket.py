@@ -19,6 +19,7 @@ async def main():
         val = (coin, msg["data"])
         #Store val in S3
         
+        
 
     client = Client(api_key, api_secret, api_passphrase)
 

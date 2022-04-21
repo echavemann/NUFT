@@ -8,6 +8,9 @@ from kucoin.asyncio import KucoinSocketManager
 import asyncio
 from binance import ThreadedWebsocketManager
 import nuftauth
+import csv
+import os
+import threading
 
 kuCoin_api_key = ''
 kuCoin_api_secret = ''
@@ -26,10 +29,10 @@ for element in kcoins:
 #awsclient = nuftauth.activate_aws('config.yaml')
 
 delay = 0 #If we use delay, just need to stagger both the input of information and the order execution.
-pendings = []
-holdings = {}
-level1 = {}
-orderbook = {}
+pendings = [] # holds tuple, (symbol, side)
+holdings = {} # holds symbol as keys, and the quantity as values.
+level1 = {} #Holds symbol as keys, price as values. 
+orderbook = {} 
 pace = .1 #The pace of our tester. It is going to be 100ms by default, but maybe we should make it longer because Python is very slow. 
 balance = 100000
 allocation = 500
@@ -39,15 +42,14 @@ allocation = 500
 
 #pull all of the data from websockets, parse, process, store in a dictionary so that the marketorders can maybe possibly run this in decent time. 
 
-#every 100ms, check the pending orders file, if there are any, add them to the pendings list/stack. 
-
-#go through pendings, if the order is a sell but is not correlated with a holding, then just remove it. 
-for entry in pendings:
-    #shit copilot is insane bro
-    if entry[1] == 'sell' and entry[0] not in holdings:
-        pendings.remove(entry)
-        
-        
+#call this every pace*second seconds
+def updatepending():
+    df = pd.read_csv('orders.csv')
+    os.remove('orders.csv')
+    df.to_dict()
+    for ticker in df:
+        if (df[ticker] == 'buy') or (ticker in holdings):
+            pendings.append((ticker, df[ticker])) 
         
         
 #Market order needs both the orders implemented but also we need to see what it's runtime is like, as well as hooking it up to the websocket data.
