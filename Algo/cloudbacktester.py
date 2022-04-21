@@ -10,6 +10,7 @@ from binance import ThreadedWebsocketManager
 import nuftauth
 import csv
 import os
+import time
 import threading
 
 kuCoin_api_key = ''
@@ -17,13 +18,13 @@ kuCoin_api_secret = ''
 kuCoin_api_passphrase = ''
 global loop
 
-bsymbols = ['BTCUSDT','ETHUSDT','LUNAUSDT','SOLUSDT','AVAXUSDT',
-    'GLMRUSDT','FTMUSDT','VRAUSDT','PYRUSDT','DOGEUSDT']
+# bsymbols = ['BTCUSDT','ETHUSDT','LUNAUSDT','SOLUSDT','AVAXUSDT',
+#     'GLMRUSDT','FTMUSDT','VRAUSDT','PYRUSDT','DOGEUSDT']
 
-kcoins = bsymbols
-for element in kcoins:
-    if 'USDT' in element:
-        element.replace('USDT','-USDT')
+# kcoins = bsymbols
+# for element in kcoins:
+#     if 'USDT' in element:
+#         element.replace('USDT','-USDT')
     
         
 #awsclient = nuftauth.activate_aws('config.yaml')
@@ -41,6 +42,18 @@ allocation = 500
 
 
 #pull all of the data from websockets, parse, process, store in a dictionary so that the marketorders can maybe possibly run this in decent time. 
+def readlevel1():
+    l1 = pd.read_csv('level1.csv')
+    tck = l1['subject']
+    dat = l1['data']
+    for line in dat:
+        dat.split(' ')
+    level1[tck] = dat[9]
+
+
+def readlevel2():
+    l2 = pd.read_csv('level2.csv')
+    orderbook[l2['s']] = l2['q']*l2['p']
 
 #call this every pace*second seconds
 def updatepending():
@@ -68,9 +81,18 @@ def marketorder(symbol, quantity, side):
 
 
 #call marketorder on every single one, using market orders for everything for now. 
-for entry in pendings:
-    marketorder(entry[0], (allocation/level1[entry[0]]), entry[1])
-#want to buy 5
-#orderbook only has 3
-#append same order to pendings with 5-3 quantity
+def execute():
+    for entry in pendings:
+        marketorder(entry[0], (allocation/level1[entry[0]]), entry[1])
 
+def main():
+    readlevel1()
+    readlevel2()
+    updatepending()
+    execute()
+    
+    
+while True:
+    main()
+    time.sleep(0.000001)
+    #call everything we wrote and then run it forever lmao

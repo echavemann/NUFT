@@ -4,3 +4,6 @@ config.yaml
 'config.yaml'
 __pycache__
 kucoindata.csv
+level1.csv
+level2.csv
+pd tests.py
