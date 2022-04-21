@@ -9,9 +9,10 @@ import pandas as pd
 delay = 0 #If we use delay, just need to stagger both the input of information and the order execution.
 pendings = []
 holdings = {}
+orderbook = {}
 pace = .1 #The pace of our tester. It is going to be 100ms by default, but maybe we should make it longer because Python is very slow. 
-balance = 0
-
+balance = 100000
+allocation = 500
 
 #pull all of the data from websockets, parse, process, store in a dictionary so that the marketorders can maybe possibly run this in decent time. 
 
@@ -21,28 +22,15 @@ balance = 0
 
 #call marketorder on every single one, using market orders for everything for now. 
 
-
-
+#want to buy 5
+#orderbook only has 3
+#append same order to pendings with 5-3 quantity
+('AAPL','buy',(5-3))
 #Market order needs both the orders implemented but also we need to see what it's runtime is like, as well as hooking it up to the websocket data.
-def marketorder(order,symbol, price, quantity, side):
+def marketorder(symbol, quantity, side):
     if side == 'buy':
-        if order == 'market':
-            #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
-            pass
-        elif order == 'limit':
-            #CHeck the orderbook, compute p*q, check bal, increment balance and holdings accordingly, pendings if required.
-            pass
         pass
     if side == 'sell':
-        #confirm we have the holdings for this
-        if holdings[symbol] < quantity:
-            return 1
-        if order == 'market':
-            #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
-            pass
-        elif order == 'limit':
-            #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
-            pass
         pass
 #Errors:
 #0 - Trade went through
