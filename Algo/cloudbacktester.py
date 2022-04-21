@@ -3,8 +3,27 @@ import csv
 import os
 import numpy
 import pandas as pd
+from kucoin.client import Client
+from kucoin.asyncio import KucoinSocketManager
+import asyncio
+from binance import ThreadedWebsocketManager
+import nuftauth
 
-#This is going to be rewritten in go 100%, just because the runtime is going to be too slow. 
+kuCoin_api_key = ''
+kuCoin_api_secret = ''
+kuCoin_api_passphrase = ''
+global loop
+
+bsymbols = ['BTCUSDT','ETHUSDT','LUNAUSDT','SOLUSDT','AVAXUSDT',
+    'GLMRUSDT','FTMUSDT','VRAUSDT','PYRUSDT','DOGEUSDT']
+
+kcoins = bsymbols
+for element in kcoins:
+    if 'USDT' in element:
+        element.replace('USDT','-USDT')
+    
+        
+#awsclient = nuftauth.activate_aws('config.yaml')
 
 delay = 0 #If we use delay, just need to stagger both the input of information and the order execution.
 pendings = []
@@ -13,6 +32,7 @@ orderbook = {}
 pace = .1 #The pace of our tester. It is going to be 100ms by default, but maybe we should make it longer because Python is very slow. 
 balance = 100000
 allocation = 500
+
 
 #pull all of the data from websockets, parse, process, store in a dictionary so that the marketorders can maybe possibly run this in decent time. 
 

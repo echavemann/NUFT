@@ -28,7 +28,7 @@ async def main():
 
     while True:
         print("sleeping to keep loop open")
-        await asyncio.sleep(20, loop=loop)
+        await asyncio.sleep(20)
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
