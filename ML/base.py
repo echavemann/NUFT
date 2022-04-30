@@ -5,8 +5,6 @@ from keras.layers import Dropout
 from keras.layers import Dense
 import pandas as pd
 import numpy as np
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
@@ -37,7 +35,7 @@ class BaseModel:
 	# this function loads dataframe into 
 		self.data = df 
 		self.data_copy = self.data.copy()
-		self.features = features
+		self.features = Features
 		self.pred = pred
 		print('Visualizing DataFrame...')
 		self.visualize_data()
@@ -49,7 +47,7 @@ class BaseModel:
 
 	def clean_data(self,features,by='Date'):
 	# this function removes the unwanted columns in the dataframe after sorting by date
-		train_df = df.sort_values(by=[by]).copy()
+		train_df = pd.sort_values(by=[by]).copy()
 		date_index = train_df.index
 		train_df = train_df.reset_index(drop=True).copy()
 		data = pd.DataFrame(train_df)
@@ -59,23 +57,25 @@ class BaseModel:
 		self.data_pred = self.filtered_data.copy()
 		self.data_pred['Prediction'] = self.data_pred[self.pred]
 
+
 	def visualize_data(self):
-	# this function provides various visualization for the dataset loaded
 		list_length = self.data.shape[1] # number of features in dataframe
 		ncols = 2
 		nrows = int(round(list_length / ncols, 0))
 		fig, ax = plt.subplots(nrows=nrows, ncols=ncols, sharex=True, figsize=(10, 7))
 		for i in range(0, list_length):
-		    ax = plt.subplot(nrows,ncols,i+1) # create a set of plots
-		    sns.lineplot(data = self.data.iloc[:, i], ax=ax) # this line plots the graphs
-		    ax.set_title(self.data.columns[i]) # give titles to graphs
-		    ax.xaxis.set_major_locator(mdates.AutoDateLocator()) # label x axis of graphs
+			ax = plt.subplot(nrows,ncols,i+1) # create a set of plots
+			sns.lineplot(data = self.data)
+			ax.set_title(self.data.columns[i]) # give titles to graphs
+			ax.xaxis.set_major_locator(mdates.AutoDateLocator()) # label x axis of graphs
 		plt.show()
+
+
 
 	def normalize_data(self):
 	# helper function that uses min-max scaler for normalizing the data
 	# this step is necessary for a better performance
-		nrows = data_filtered.shape[0]
+		nrows = self.data_filtered.shape[0]
 		np_data_unscaled = np.array(self.data_filtered)
 		np_data = np.reshape(np_data_unscaled, (nrows, -1))
 		self.feature_scaler = MinMaxScaler()
@@ -90,7 +90,7 @@ class BaseModel:
 		# transform prediction back to the original scale
 		y_pred = self.pred_scaler.inverse_transform(y_pred_scaled)
 		# transform y_test back to the original scale
-		y_test_unscaled = self.pred_scaler.inverse_transform(y_test.reshape(-1, 1))
+		y_test_unscaled = self.pred_scaler.inverse_transform(y_pred.reshape(-1, 1))
 
 		plt.plot(y_pred)
 		plt.plot(y_test_unscaled)
@@ -99,15 +99,15 @@ class BaseModel:
 		plt.legend(['Predicted','Actual Value'])
 
 	def partition_dataset(self, sequence_length, data, index_close):
-	    x, y = [], []
-	    data_len = self.data_copy.shape[0]
-	    for i in range(sequence_length, data_len):
-	        x.append(self.data_copy[i-sequence_length:i,:]) #contains sequence_length values 0-sequence_length * columsn
-	        y.append(self.data_copy[i, index_close]) #contains the prediction values for validation,  for single-step prediction
+		x, y = [], []
+		data_len = self.data_copy.shape[0]
+		for i in range(sequence_length, data_len):
+			x.append(self.data_copy[i-sequence_length:i,:]) #contains sequence_length values 0-sequence_length * columsn
+			y.append(self.data_copy[i, index_close]) #contains the prediction values for validation,  for single-step prediction
 	    # Convert the x and y to numpy arrays
-	    x = np.array(x)
-	    y = np.array(y)
-	    return x, y
+		x = np.array(x)
+		y = np.array(y)
+		return x, y
 
 	def train_test_split(self,frac=0.8,sequence_length=50):
 		index_close = self.data_copy.columns.get_loc(self.pred)
@@ -129,7 +129,7 @@ class BaseModel:
 		self.model.add(Dense(1))
 		# Compile the model
 		self.model.compile(optimizer='adam', loss='mse')
-		history = model.fit(self.x_train, self.y_train, 
+		history = self.model.fit(self.x_train, self.y_train, 
                     batch_size=32, 
                     epochs=50,
                     validation_data=(self.x_test, self.y_test)
