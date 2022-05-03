@@ -11,26 +11,23 @@ def get_keys(config_file, service, keys):
     with open(config_file, 'r') as stream:
         cfg = yaml.safe_load(stream)
     cfg = cfg[service]
-    cfg = list(cfg.values())
-    for i, key in enumerate(keys):
-        t = cfg[i]
-        cfg[i] = str(cfg[i])
-        cfg[i] = cfg[i].replace(key,'')
-        if t == cfg[i]:
-            raise Exception('Key not found in config file!')   
-    return cfg
+    ret = []
+    for key in (keys):
+        if key not in cfg.keys():
+            raise Exception('Missing key: ' + key)
+        ret.append(cfg[key])
+    return ret
 
 #Enables all AWS functions 
 def activate_aws(config_file):
-    [KEY,SECRET] = get_keys(config_file, 'aws', ['api_key', 'secret_key'])
+    [KEY,SECRET] = get_keys(config_file, 'twitter', ['api_key', 'secret_key'])
     client = boto3.client('s3',
                       aws_access_key_id=KEY,
                       aws_secret_access_key=SECRET)
     return client
 
 #Add this line to your program:
-client = activate_aws('config.yaml')
-    
+
 #[KEY,SECRET] = activate_aws('config.yaml')
 
 
