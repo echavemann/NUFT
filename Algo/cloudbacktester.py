@@ -11,7 +11,7 @@ import nuftauth
 import csv
 import os
 import time
-import threading
+
 
 kuCoin_api_key = ''
 kuCoin_api_secret = ''
