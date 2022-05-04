@@ -24,7 +24,7 @@ async def main():
         if coin in coins:
             today = datetime.today().strftime('%Y-%m-%d')
             file_path = f'Websockets/Kucoin/data/{coin} {today}.csv'
-            with open(file_path, 'a') as f:
+            with open(file_path, 'a',newline='') as f:
                 writer = csv.writer(f)
                 cols = [None]*8
                 i = 0
