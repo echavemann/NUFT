@@ -23,15 +23,17 @@ async def main():
         
         if coin in coins:
             today = datetime.today().strftime('%Y-%m-%d')
-            file_path = f'data/{coin} {today}.csv'
+            file_path = f'Websockets/Kucoin/data/{coin} {today}.csv'
             with open(file_path, 'a') as f:
                 writer = csv.writer(f)
                 cols = [None]*8
                 i = 0
+                
                 for value in msg["data"].values():
                     cols[i] = value
                     i += 1
                 writer.writerow(cols)
+                
             # val = (coin, msg["data"])
             #Store val in S3
         
