@@ -9,7 +9,7 @@ class Binance_Websocket:
 		self.api_secret =''
 		self.queue = queue
 
-	def main(self, queue):
+	def main(self):
 
 	    # list of channels that we are subscribing to
 	    socket = ThreadedWebsocketManager(api_key=self.api_key, api_secret=self.api_secret)
@@ -28,8 +28,10 @@ class Binance_Websocket:
 	        # once we have received 100 messages from Binance, pack
 	        # the messages and store it to a local csv file. Then it's
 	        # uploaded to our AWS.
-	        df = pandas.DataFrame(msg)
-	        self.queue.put(df)
+	        # df = pd.DataFrame(msg)
+	        # print(type(msg))
+	        self.queue.put(msg)
+	        print(1)
 
 	    # subscribe to the Binance websocket channels according to the
 	    # symbols listed above
