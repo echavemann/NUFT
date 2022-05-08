@@ -8,3 +8,12 @@ if __name__ == '__main__':
 	p = mp.Process(target=websocket.main(), args=(q))
 	p.start()
 
+import multiprocessing as mp
+q = mp.Queue()
+q.put(2)
+q.put(4)
+
+elements = list()
+while q.qsize():
+    elements.append(q.get())
+print(elements)
