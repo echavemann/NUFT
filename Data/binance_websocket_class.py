@@ -1,7 +1,7 @@
 import asyncio
 from asyncore import loop
 from lib2to3.pygram import Symbols 
-from binance import Client, BinanceSocketManager
+from binance import AsyncClient, BinanceSocketManager
 import csv
 import os
 import datetime
@@ -9,7 +9,7 @@ import datetime
 coins = ['BTC-USDT', 'ETH-USDT']
 
 class Binance_Websocket:
-    def __init__(self, queue, symbols, api_key, api_secret):
+    def __init__(self, queue, symbols, api_key='', api_secret=''):
         self.symbols = symbols
         self.queue = queue
         self.api_key = api_key
@@ -31,8 +31,13 @@ class Binance_Websocket:
                 print(self.queue.qsize())
                 
                 
-        client = Client(self.api_key, self.api_secret)
+        client = await AsyncClient.create(self.api_key, self.api_secret)
         bsm = await BinanceSocketManager.create(loop, client, handle_evt)
         await bsm.subscribe('trade', self.symbols)
         
-        w
+        while 1:
+            print("sleeping to keep loop open")
+            await asyncio.sleep(20)
+
+  
+        
