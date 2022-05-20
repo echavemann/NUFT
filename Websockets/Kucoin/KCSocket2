@@ -1,0 +1,25 @@
+import asyncio
+import time
+import websockets as ws
+
+
+async def websocketConnect():
+    async def event(msg):
+        print(time.time())
+        print(msg["data"]["time"])
+
+        
+
+# Subscribe to ALL tickers
+    topic = "/market/ticker:all"
+    publicClient = ws.WsToken(url="https://api.kucoin.com")
+    wsClientTick = await KucoinWsClient.create(None, publicClient, event, private=False)
+    await wsClientTick.subscribe(topic)
+
+    while True:
+        await asyncio.sleep(1)
+
+
+if __name__ == "__main__":
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(websocketConnect())

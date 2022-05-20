@@ -1,0 +1,25 @@
+import websockets
+import asyncio
+
+class KSM:
+    def __init__(self):
+        self._callback = None
+        self._conn = None
+        self._loop = None
+        self._client = None
+        self._private = False
+        self.log = []
+        
+    @classmethod
+    async def create(cls, loop, client, callback, private = False):
+        self = KSM()
+        self.loop = loop
+        self._client = client
+        self._private = private
+        self._callback = callback
+        self._conn = await websockets.connect(self._client, loop = self.loop)
+        return self
+    
+    async def _recv(self,msg):
+        if 'data' in msg:
+            await self._callback(msg)
