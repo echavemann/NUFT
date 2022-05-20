@@ -8,9 +8,9 @@ import os
 coins = ['BTC-USDT', 'ETH-USDT']
 
 class Kucoin_Websocket:
-    def __init__(self, symbols, api_key='', api_secret='', api_passphrase = ''):
+    def __init__(self,queue,symbols='', api_key='', api_secret='', api_passphrase = ''):
         self.symbols = symbols
-<<<<<<< Updated upstream
+        self.queue  = queue
         self.api_key = api_key
         self.api_secret = api_secret
         self.api_passphrase = api_passphrase
@@ -25,19 +25,6 @@ class Kucoin_Websocket:
         #This needs to be a dictionary powered by key pairs
         async def handle_evt(msg):
             coin = msg['subject']
-=======
-        self.api_key 
-
-    def main(self):
-        socket = ThreadedWebsocketManager(api_key = self.api_key, api_secret = self.api_secret)
-        socket.start()
-
-        def handle_socket_message(msg):
-            
-            del msg["M"]
-
-            self.queue.put(msg)
->>>>>>> Stashed changes
         
             if coin in coins:
                 # today = datetime.today().strftime('%Y-%m-%d')
@@ -52,6 +39,8 @@ class Kucoin_Websocket:
                 #         i += 1
                 #     writer.writerow(cols)
                 print(msg)
+                self.queue.put(msg)
+                print(self.queue.qsize())
                 
             # val = (coin, msg["data"])
             #Store val in S3

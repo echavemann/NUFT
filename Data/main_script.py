@@ -5,6 +5,7 @@ import queue_fix
 
 if __name__ == '__main__':
 	mp.set_start_method('spawn')
-	websocket = kc.Kucoin_Websocket(['BTC-USDT', 'ETH-USDT'])
+	q = mp.Queue()
+	websocket = kc.Kucoin_Websocket(q,['BTC-USDT', 'ETH-USDT'])
 	p = mp.Process(target=websocket.start())
 	p.start()
