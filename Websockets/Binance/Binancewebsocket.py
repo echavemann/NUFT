@@ -52,7 +52,8 @@ def main():
         socket.start_aggtrade_socket(callback=handle_socket_message, symbol=symbols[int(i)])
     socket.join()
 
-main()
+if __name__ == "__main__":
+    main()
 
 
 
