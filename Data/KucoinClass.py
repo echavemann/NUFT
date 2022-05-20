@@ -1,4 +1,3 @@
-from asyncore import loop
 import asyncio
 from kucoin.client import Client
 from kucoin.asyncio import KucoinSocketManager
@@ -17,10 +16,11 @@ class Kucoin_Websocket:
     
     def start(self):
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.main())
+        loop.run_until_complete(self.run())
         
-    async def main(self):
+    async def run(self):
         global loop
+        loop = asyncio.get_event_loop()
         #This needs to be a dictionary powered by key pairs
         async def handle_evt(msg):
             coin = msg['subject']
@@ -37,7 +37,7 @@ class Kucoin_Websocket:
                 #         cols[i] = value
                 #         i += 1
                 #     writer.writerow(cols)
-                print(1)
+                print(msg)
                 
             # val = (coin, msg["data"])
             #Store val in S3
@@ -53,5 +53,11 @@ class Kucoin_Websocket:
             print("sleeping to keep loop open")
             await asyncio.sleep(20)
 
-k = Kucoin_Websocket(['BTC-USDT', 'ETH-USDT'], api_key='', api_secret='', api_passphrase = '')
-k.start()
+def main():
+    coins = ['BTC-USDT', 'ETH-USDT']
+    kucoin = Kucoin_Websocket(coins)
+    kucoin.start()
+
+if __name__ == '__main__':
+    main()
+
