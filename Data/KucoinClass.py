@@ -53,11 +53,11 @@ class Kucoin_Websocket:
             print("sleeping to keep loop open")
             await asyncio.sleep(20)
 
-def main():
-    coins = ['BTC-USDT', 'ETH-USDT']
-    kucoin = Kucoin_Websocket(coins)
-    kucoin.start()
+# def main():
+#     coins = ['BTC-USDT', 'ETH-USDT']
+#     kucoin = Kucoin_Websocket(coins)
+#     kucoin.start()
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
