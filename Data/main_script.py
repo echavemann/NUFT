@@ -1,11 +1,12 @@
 import multiprocessing as mp
+import concurrent.futures as cf
 import KucoinClass as kc
 import pandas as pd
 import queue_fix
 
 if __name__ == '__main__':
-	mp.set_start_method('spawn')
-	q = mp.Queue()
-	websocket = kc.Kucoin_Websocket(q,['BTC-USDT', 'ETH-USDT'])
-	p = mp.Process(target=websocket.start())
-	p.start()
+	with cf.ProcessPoolExecutor() as executor:
+		q = mp.Queue()
+		websocket = kc.Kucoin_Websocket(q,['BTC-USDT', 'ETH-USDT'])
+		p = executor.submit(websocket.start())
+		p.start()
