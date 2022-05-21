@@ -20,7 +20,7 @@ class Binance_Websocket:
     
     def generate_symbols(self,symbols):
         s = []
-        for symbol in symbols:
+        for symbol in symbols: 
             s.append(symbol.lower()+'@ticker')
         return s
 
@@ -32,9 +32,8 @@ class Binance_Websocket:
         global loop
         loop = asyncio.get_event_loop()
 
-        async def handle_evt(msg):            
-            # print(msg)
-            self.queue.put(msg)
+        # async def handle_evt(msg):            
+        #     # print(msg)
            
         
         # start the multiplex socket
@@ -47,8 +46,8 @@ class Binance_Websocket:
         async with sockets as s:
             while True:
                 res = await s.recv()
-                print(res)
-                # print(self.queue.qsize())
+                self.queue.put(res)
+                print(self.queue.qsize())
 
 def main():
     q = mp.Queue()
