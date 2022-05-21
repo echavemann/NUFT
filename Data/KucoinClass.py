@@ -25,22 +25,11 @@ class Kucoin_Websocket:
         #This needs to be a dictionary powered by key pairs
         async def handle_evt(msg):
             coin = msg['subject']
-        
-            if coin in coins:
-                # today = datetime.today().strftime('%Y-%m-%d')
-                # file_path = f'Websockets/Kucoin/data/{coin} {today}.csv'
-                # with open(file_path, 'a',newline='') as f:
-                #     writer = csv.writer(f)
-                #     cols = [None]*8
-                #     i = 0
-                
-                #     for value in msg["data"].values():
-                #         cols[i] = value
-                #         i += 1
-                #     writer.writerow(cols)
-                #print(msg)
+            #coin2 = msg['data']['symbol']
+            print(coin)
+            if coin in coins :
+                print(msg)
                 self.queue.put(msg)
-                #print(self.queue.qsize())
                 
             # val = (coin, msg["data"])
             #Store val in S3
@@ -50,6 +39,8 @@ class Kucoin_Websocket:
         ksm = await KucoinSocketManager.create(loop, client, handle_evt)
 
         await ksm.subscribe('/market/ticker:all')
+        await ksm.subscribe('/market/level2:BTC-USDT')
+        await ksm.subscribe('/market/level2:ETH-USDT')
 
 
         while True:
