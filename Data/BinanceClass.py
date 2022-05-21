@@ -1,5 +1,4 @@
 import asyncio
-from asyncore import loop
 from lib2to3.pygram import Symbols 
 from binance import AsyncClient, BinanceSocketManager
 import csv
@@ -30,8 +29,7 @@ class Binance_Websocket:
         
     async def run(self):
         global loop
-        loop = asyncio.get_event_loop()
-
+        
         # async def handle_evt(msg):            
         #     # print(msg)
            

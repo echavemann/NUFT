@@ -38,9 +38,9 @@ class Kucoin_Websocket:
                 #         cols[i] = value
                 #         i += 1
                 #     writer.writerow(cols)
-                print(msg)
+                #print(msg)
                 self.queue.put(msg)
-                print(self.queue.qsize())
+                #print(self.queue.qsize())
                 
             # val = (coin, msg["data"])
             #Store val in S3
