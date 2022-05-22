@@ -18,7 +18,7 @@ class binance_websocket_raw():
             return '!ticker@arr'
         params = []
         for coin in coins:
-            params.append(coin.lower()+'@ticker')
+            params.append(coin.lower()+'@trade')
         return params
 
     def generate_request(self): # request will be converted to a json and sent to the endpoint
@@ -31,7 +31,7 @@ class binance_websocket_raw():
         request["id"] = 1 # idk what this is but whatever positive integer works here
         return request
 
-    async def run(self):
+    async def run(self): # poweroverwhelming
         async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
             await websocket.send(json.dumps(self.request))
             while True:
