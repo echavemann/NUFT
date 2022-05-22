@@ -51,6 +51,7 @@ class kucoin_websocket_raw():
             while True:
                 message = await websocket.recv()
                 self.queue.put(message)
+                # print(message)
 
 # r = requests.post('https://api.kucoin.com/api/v1/bullet-public')
 # r = r.json()
@@ -62,7 +63,7 @@ class kucoin_websocket_raw():
 
 async def main():
     q = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(['/market/ticker:all','/market/level2:BTC-USDT'])
+    ws = kucoin_websocket_raw(q,['/market/ticker:all','/market/level2:BTC-USDT'])
     ws.get_ws()
     print(ws.wsendpoint)
     await ws.get_id()
