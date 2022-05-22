@@ -1,57 +1,52 @@
 import asyncio
-from lib2to3.pygram import Symbols 
-from binance import AsyncClient, BinanceSocketManager
-import csv
-import os
-import multiprocessing as mp
-import datetime
+import websockets
+import requests
+import multiprocessing
+import json
 
-class Binance_Websocket:
+class binance_websocket_raw():
 
-    def __init__(self, queue, symbols=['BTCUSDT'], api_key='', api_secret=''):
+    def __init__(self,queue,coins = []):
         self.queue = queue
-        self.api_key = api_key
-        self.api_secret = api_secret
-        # binance has some weird rules about their symbols, and we need to 
-        # attach sth to every symbol. Then we start a multiplex socket with 
-        # the modified list of symbols.
-        self.symbols = self.generate_symbols(symbols)
-    
-    def generate_symbols(self,symbols):
-        s = []
-        for symbol in symbols: 
-            s.append(symbol.lower()+'@ticker')
-        return s
+        self.coins = coins
+        self.params = self.generate_params(coins)
+        self.request = self.generate_request()
 
-    def start(self):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.run())
-        
+    def generate_params(self,coins): # the params will be used to generate the request
+        if coins == []:
+            # get all market tickers if no coin is specified
+            return '!ticker@arr'
+        params = []
+        for coin in coins:
+            params.append(coin.lower()+'@ticker')
+        return params
+
+    def generate_request(self): # request will be converted to a json and sent to the endpoint
+        request = {}
+        params = []
+        for param in self.params:
+            params.append(param)
+        request["method"] = "SUBSCRIBE"
+        request["params"] = params
+        request["id"] = 1 # idk what this is but whatever positive integer works here
+        return request
+
     async def run(self):
-        global loop
-        
-        # async def handle_evt(msg):            
-        #     # print(msg)
-           
-        
-        # start the multiplex socket
-        client = await AsyncClient.create(self.api_key, self.api_secret)
-        bm = BinanceSocketManager(client)
-        sockets = bm.multiplex_socket(self.symbols)
-
-        # the following stuff just print the results on your console and 
-        # does nothing else
-        async with sockets as s:
+        async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
+            await websocket.send(json.dumps(self.request))
             while True:
-                res = await s.recv()
-                self.queue.put(res)
-                print(self.queue.qsize())
+                    message = await websocket.recv()
+                    self.queue.put(message)
+                    print(message)
 
-def main():
-    q = mp.Queue()
-    coins = ['BTCUSDT', 'ETHUSDT']
-    binance = Binance_Websocket(q,coins)
-    binance.start()
+async def main():
+    q = multiprocessing.Queue()
+    coins = ['BTCUSDT','ETHUSDT']
+    bwr = binance_websocket_raw(q,coins=coins)
+    # this example's getting market tickers for the specified coin types here, per the doc of binance, tickers come once every sec
+    # if need sth else(like order book) just change generate_params's '@ticker' to whatever u want
+    # or leave coins empty to get all market tickers
+    await bwr.run()
 
 if __name__ == '__main__':
-    main()
+    asyncio.get_event_loop().run_until_complete(main())
