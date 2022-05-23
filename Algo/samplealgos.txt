@@ -1,0 +1,8 @@
+In order of exeution:
+
+Bolinger Bands
+Standard Indicators (RSI and the like)
+Statistical Arbitrage
+Machine Learning Outputs
+Stochastic Processes
+Machine Learning Modulators
