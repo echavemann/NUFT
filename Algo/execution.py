@@ -1,6 +1,13 @@
 import ccxt
 import kucoin
 import nuftauth
+import multiprocessing as mp
+
+#backtester class needs to take in a mp.Queue
+#try-except for the queue read
+#akes in order queue (AAPL,2)
+#output confirmation queue
+#('buy/sell', USD, symbol)
 
 exchanges = {'Binance':2}
 #2 connotes only api and secret. 
@@ -35,6 +42,12 @@ def placeorder(exchange:str, symbol:str, type:str, side:str, amount, price):
             return 0
         else:
             return 1
+
+
+#activate all the brokerage
+#While true
+#read queue, call placeorder. 
+#Put confirmation another queue
     
         
     
