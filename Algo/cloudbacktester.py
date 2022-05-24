@@ -3,10 +3,7 @@ import csv
 import os
 import numpy
 import pandas as pd
-from kucoin.client import Client
-from kucoin.asyncio import KucoinSocketManager
 import asyncio
-from binance import ThreadedWebsocketManager
 import nuftauth
 import csv
 import os
