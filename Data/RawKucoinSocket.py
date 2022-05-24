@@ -51,6 +51,7 @@ class kucoin_websocket_raw():
             while True:
                 message = await websocket.recv()
                 self.queue.put(message)
+                print(self.queue.qsize())
                 # print(message)
 
 # r = requests.post('https://api.kucoin.com/api/v1/bullet-public')
