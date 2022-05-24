@@ -1,5 +1,6 @@
 import asyncio
 import websockets
+import websocket
 import requests
 import multiprocessing
 import json
@@ -30,8 +31,8 @@ class binance_websocket_raw():
         request["params"] = params
         request["id"] = 1 # idk what this is but whatever positive integer works here
         return request
-
-    async def run(self): # poweroverwhelming
+    
+    async def run(self): # poweroverwhelming  +4/+4 and the minion dies at the end of the turn?
         async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
             await websocket.send(json.dumps(self.request))
             while True:

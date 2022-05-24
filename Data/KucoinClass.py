@@ -26,7 +26,7 @@ class Kucoin_Websocket:
         async def handle_evt(msg):
             coin = msg['subject']
             #coin2 = msg['data']['symbol']
-            print(coin)
+            #print(coin)
             if coin in coins :
                 print(msg)
                 self.queue.put(msg)
