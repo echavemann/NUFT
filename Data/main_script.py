@@ -1,21 +1,22 @@
 import multiprocessing as mp
 import concurrent.futures as cf
-import KucoinClass as kc
 import BinanceClass as bc
+import RawKucoinSocket as ks
 import pandas as pd
-
-
-coins = ['BTC-USDT', 'ETH-USDT']
-
-#doe
-    
-
-if __name__ == '__main__':
+import asyncio
+	
+async def main():
 	with cf.ProcessPoolExecutor() as executor:
 		q = mp.Queue()
-		kucoinwebsocket = kc.Kucoin_Websocket(q,coins)
-		binancewebsocket = bc.binance_websocket_raw(q,coins)
-		#executor.submit(kucoinwebsocket.start())
-		executor.submit(binancewebsocket.run())
-		#executor.submit(binancewebsoocket.start())
-		#p.start()
+		kucoinwebsocket = ks.kucoin_websocket_raw(q,['/market/ticker:all','/market/level2:BTC-USDT'])
+		kucoinwebsocket.get_ws()
+		await kucoinwebsocket.get_id()
+		kucoinwebsocket.get_ws()
+		binancewebsocket = bc.binance_websocket_raw(q,['BTCUSDT','ETHUSDT'])
+		# executor.submit(kucoinwebsocket.start())
+		executor.submit(await binancewebsocket.run())
+		executor.submit(await kucoinwebsocket.run())
+
+if __name__ == '__main__':
+	asyncio.get_event_loop().run_until_complete(main())
+

@@ -38,7 +38,8 @@ class binance_websocket_raw():
             while True:
                     message = await websocket.recv()
                     self.queue.put(message)
-                    print(message)
+                    print(self.queue.qsize())
+                    # print(message)
 
 async def main():
     q = multiprocessing.Queue()
