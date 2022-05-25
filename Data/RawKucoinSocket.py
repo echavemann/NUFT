@@ -39,20 +39,23 @@ class kucoin_websocket_raw():
             
     #woooo
     async def _run(self):
-        async with websockets.connect(self.wsendpoint) as websocket:
-            for topic in self.topics:
-                await websocket.send(json.dumps({
-                    "id": self.connectid,
-                    "type": 'subscribe',
-                    "topic": topic,
-                    "response": True
-                }))
-            
-            while True:
-                message = await websocket.recv()
-                self.queue.put(message)
-                print(self.queue.qsize())
-                # print(message)
+        try:
+            async with websockets.connect(self.wsendpoint) as websocket:
+                for topic in self.topics:
+                    await websocket.send(json.dumps({
+                        "id": self.connectid,
+                        "type": 'subscribe',
+                        "topic": topic,
+                        "response": True
+                    }))
+                
+                while True:
+                    message = await websocket.recv()
+                    self.queue.put(message)
+                    print('Kucoin')
+        except Exception:
+            import traceback
+            print(traceback.format_exc())
 
 # r = requests.post('https://api.kucoin.com/api/v1/bullet-public')
 # r = r.json()
@@ -71,5 +74,5 @@ async def main():
     ws.get_ws()
     await ws._run()
 
-if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+def run():
+    asyncio.run(main())

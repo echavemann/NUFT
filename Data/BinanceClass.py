@@ -31,15 +31,21 @@ class binance_websocket_raw():
         request["params"] = params
         request["id"] = 1 # idk what this is but whatever positive integer works here
         return request
+
+    async def run(self): # poweroverwhelming
+        try:
+            async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
+                await websocket.send(json.dumps(self.request))
+                while True:
+                        message = await websocket.recv()
+                        self.queue.put(message)
+                        print('Binance')
+        except Exception:
+            import traceback
+            print(traceback.format_exc())
     
-    async def run(self): # poweroverwhelming  +4/+4 and the minion dies at the end of the turn?
-        async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
-            await websocket.send(json.dumps(self.request))
-            while True:
-                    message = await websocket.recv()
-                    self.queue.put(message)
-                    print(self.queue.qsize())
-                    # print(message)
+    def start(self):
+        self.run()
 
 async def main():
     q = multiprocessing.Queue()
@@ -50,5 +56,5 @@ async def main():
     # or leave coins empty to get all market tickers
     await bwr.run()
 
-if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+def run():
+    asyncio.run(main())
