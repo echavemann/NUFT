@@ -17,14 +17,13 @@ exchanges = {'Binance':2}
 #5 Connotes api,secret, password
 
 active = {}
-#active values are 
+#active values are the active brokers
 
 
 #for each exchange, run the following processes:
 def activate_binance():
     binance = ccxt.binance()
-    binance.apiKey = ''
-    binance.secret = ''
+    binance.apiKey,binance.secret = nuftauth.get_keys('config.yaml', 'binance', ['api_key', 'secret_key'])
     active['Binance'] = binance
 #General orders: 
 #order = binance.create_order(symbol='BTC/USDT', type='limit', side='buy', amount=0.01, price=0.000001)
@@ -53,16 +52,18 @@ def placeorder(exchange:str, symbol:str, type:str, side:str, amount, price):
 #Put confirmation another queue
 
 #some magical input queue
-def main(queue):
+def main(inqueue,outqueue):
     #activate all the brokerage
     activate_binance()
     #create a queue for results
-    result_queue = []
+    result_queue = outqueue
     #while true
-    while(queue.qsize() > 0):
+    while(True):
+        #you need to put a try/except here for reading the queue, otherwise macos will brick qsize. 
+        
         # need to know the order of the queue
         #reading the queue
-        cur_data = queue.dequeue()
+        cur_data = inqueue.dequeue()
         #the indexing is wrong, modify this based on the order of the queue
         exchange = cur_data[0]
         symbol = cur_data[1]
@@ -73,10 +74,8 @@ def main(queue):
         returned_indicator, order = placeorder(exchange, symbol, type, side, amount)
         if returned_indicator == 0:
             result_queue.append(order)
-        if result_queue.__len__ == queue.qsize(): 
-            df = pd.DataFrame(result_queue)
-            result_queue = []
-            df.to_csv("Confirmation Queue.csv")
+        #QSize is a very broken function, I wouldn't do this. 
+        #You don't need to do this function to be honest. 
     
     
         
