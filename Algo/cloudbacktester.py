@@ -32,6 +32,7 @@ holdings = {} # holds symbol as keys, and the quantity as values.
 level1 = {} #Holds symbol as keys, price as values. 
 orderbook = {} 
 pace = .1 #The pace of our tester. It is going to be 100ms by default, but maybe we should make it longer because Python is very slow. 
+global balance
 balance = 100000
 allocation = 500
 
