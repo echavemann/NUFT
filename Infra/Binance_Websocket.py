@@ -1,9 +1,10 @@
+#Dependencies
 import asyncio
 import websockets
-import websocket
-import requests
 import multiprocessing
 import json
+
+#
 
 class binance_websocket_raw():
 
@@ -47,6 +48,7 @@ class binance_websocket_raw():
     def start(self):
         self.run()
 
+
 async def main():
     q = multiprocessing.Queue()
     coins = ['BTCUSDT','ETHUSDT']
@@ -56,5 +58,6 @@ async def main():
     # or leave coins empty to get all market tickers
     await bwr.run()
 
+#Non-async wrapper so MP can run it. 
 def run():
     asyncio.run(main())

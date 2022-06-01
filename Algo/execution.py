@@ -1,5 +1,4 @@
 import ccxt
-#from kucoin.client import Client
 import nuftauth
 import multiprocessing as mp
 import pandas as pd
