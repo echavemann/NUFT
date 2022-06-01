@@ -63,39 +63,39 @@ def updatepending():
             pendings.append((ticker, df[ticker])) 
         
         
-#Market order needs both the orders implemented but also we need to see what it's runtime is like, as well as hooking it up to the websocket data.
-def marketorder(symbol, quantity, side):
-    if side == 'buy':
-        l2 = pd.read_csv('level2.csv')
-        if l2['q'] < quantity:
-            pending_quant=quantity-l2['q']
-            change_balance =level1[symbol] * l2['q']
-            balance = balance - change_balance 
-            l2['q'] = pending_quant
-            holdings=holdings.append(
-                pd.Series([symbol, change_balance,'N/A'],
-                index = my_columns),
-                ignore_index= True)
-            pendings = pendings.append(symbol,side,pending_quant)
+# #Market order needs both the orders implemented but also we need to see what it's runtime is like, as well as hooking it up to the websocket data.
+# def marketorder(symbol, quantity, side):
+#     if side == 'buy':
+#         l2 = pd.read_csv('level2.csv')
+#         if l2['q'] < quantity:
+#             pending_quant=quantity-l2['q']
+#             change_balance =level1[symbol] * l2['q']
+#             balance = balance - change_balance 
+#             l2['q'] = pending_quant
+#             holdings=holdings.append(
+#                 pd.Series([symbol, change_balance,'N/A'],
+#                 index = my_columns),
+#                 ignore_index= True)
+#             pendings = pendings.append(symbol,side,pending_quant)
             
-        else:
-            change_balance =level1[symbol] * quantity
-            l2['q']=l2['q']-quantity
-            balance = balance - change_balance 
-            holdings=holdings.append(
-                pd.Series([symbol, change_balance,'N/A'],
-                index = my_columns),
-                ignore_index= True)        
-        #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
-    if side == 'sell':
-        l2 = pd.read_csv('level2.csv')
-        pass
-        change_balance =level1[symbol] * quantity
-        balance = balance + change_balance 
-        holdings=holdings.append(
-            pd.Series([symbol, change_balance,'N/A'],
-            index = my_columns),
-            ignore_index= True)
+#         else:
+#             change_balance =level1[symbol] * quantity
+#             l2['q']=l2['q']-quantity
+#             balance = balance - change_balance 
+#             holdings=holdings.append(
+#                 pd.Series([symbol, change_balance,'N/A'],
+#                 index = my_columns),
+#                 ignore_index= True)        
+#         #Check the orderbook, compute p*q,check bal, increment balance and holdings accordingly, pendings if required. 
+#     if side == 'sell':
+#         l2 = pd.read_csv('level2.csv')
+#         pass
+#         change_balance =level1[symbol] * quantity
+#         balance = balance + change_balance 
+#         holdings=holdings.append(
+#             pd.Series([symbol, change_balance,'N/A'],
+#             index = my_columns),
+#             ignore_index= True)
 #Errors:
 #0 - Trade went through
 #1 - Trade failed due to insufficient funds
@@ -103,19 +103,19 @@ def marketorder(symbol, quantity, side):
 #3 - Trade failed due to insufficient funds
 
 
-#call marketorder on every single one, using market orders for everything for now. 
-def execute():
-    for entry in pendings:
-        marketorder(entry[0], (allocation/level1[entry[0]]), entry[1])
+# #call marketorder on every single one, using market orders for everything for now. 
+# def execute():
+#     for entry in pendings:
+#         marketorder(entry[0], (allocation/level1[entry[0]]), entry[1])
 
-def main():
-    readlevel1()
-    readlevel2()
-    updatepending()
-    execute()
+# def main():
+#     readlevel1()
+#     readlevel2()
+#     updatepending()
+#     execute()
     
     
-while True:
-    main()
-    time.sleep(0.000001)
+# while True:
+#     main()
+#     time.sleep(0.000001)
     #call everything we wrote and then run it forever lmao
