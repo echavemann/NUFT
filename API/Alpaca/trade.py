@@ -7,8 +7,7 @@ ORDERS_URL = "[]/v2/orders".format(BASE_URL)
 HEADERS = {'APCA_API_KEY_ID': API_KEY, 'APCA_API_SECRET_KEY':SECRET_KEY}
 #need to autheticate the API using the secret key and the api key 
 def get_account():
-    r = requests.get(ACCOUNT_URL, headers =  HEADERS
- } )
+    r = requests.get(ACCOUNT_URL, headers =  HEADERS)
     return json.loads(r.content)  #need to access the keys in the r.content dictionary 
 
 #there are multiple endpoints 
