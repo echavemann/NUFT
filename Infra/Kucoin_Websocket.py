@@ -18,6 +18,7 @@ class kucoin_websocket_raw():
         self.wsendpoint = ''
         self.timeout = 0
         self.topics = topics
+        self.last_ping = time.time()
 
     #prereq function
     def get_ws(self):
@@ -48,6 +49,12 @@ class kucoin_websocket_raw():
                         "topic": topic,
                         "response": True
                     }))
+                if time.time() - self.last_ping > self.timeout:
+                    await websocket.send(json.dumps({
+                        "id": self.connectid,
+                        "type": 'ping'
+                    }))
+                
                 
                 while True:
                     message = await websocket.recv()
