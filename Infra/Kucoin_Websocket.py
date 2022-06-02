@@ -49,11 +49,12 @@ class kucoin_websocket_raw():
                         "topic": topic,
                         "response": True
                     }))
-                if time.time() - self.last_ping > self.timeout:
-                    await websocket.send(json.dumps({
+                #if time.time() - self.last_ping > self.timeout:
+                await websocket.send(json.dumps({
                         "id": self.connectid,
                         "type": 'ping'
-                    }))
+                }))
+                self.last_ping = time.time()
                 
                 
                 while True:
