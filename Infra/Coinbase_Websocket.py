@@ -47,4 +47,3 @@ async def main():
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run():
     asyncio.run(main())
-run()
