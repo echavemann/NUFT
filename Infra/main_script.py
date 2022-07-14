@@ -2,6 +2,7 @@ import multiprocessing as mp
 import concurrent.futures as cf
 import Binance_Websocket as bc
 import Kucoin_Websocket as ks
+import Coinbase_Websocket as cb
 import pandas as pd
 import asyncio
 
@@ -11,6 +12,7 @@ import asyncio
 async def main():
 	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
 		executor.submit(ks.run)
+		executor.submit(cb.run)
 		executor.submit(bc.run)
 
 #Run code
