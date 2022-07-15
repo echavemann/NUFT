@@ -48,10 +48,9 @@ class Backtester():
     '''
     - gets the new order, if there is one
     - gets the current coin price, and the newest order book
-    - calcualte how much our stablecoin would be worth in crypto terms (since the trade volume is in crypto)
-    essentially one function to put a few very common things together
+    - calculate how much our stablecoin would be worth in crypto terms (since the trade volume is in crypto)
     '''
-    def refreshInfo(self):                                              #refreshes currOrders, currPrice and currOrderBook
+    def refreshInfo(self):#refreshes currOrders, currPrice and currOrderBook
         if not self.orderQueue.empty():
             self.orderList.append(self.orderQueue.get())
         self.currCoinPrice = self.priceQueue.get()['price']

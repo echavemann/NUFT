@@ -34,7 +34,7 @@ class kucoin_websocket():
             while True:
                 message = await websocket.recv()
                 if self.queue.full():
-                    print("Queue is Full")
+                    print("Kucoin")
                 self.queue.put(message)
                 print(message)
 
