@@ -1,0 +1,1 @@
+pandas, numpy, tensorflow, boto3, matplotlib, sklearn, seaborn, pyyaml, websockets, python-dotenv

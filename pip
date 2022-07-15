@@ -1,5 +1,0 @@
-Windows:
-pip install pandas, numpy, tensorflow, python-binance, python-kucoin, boto3, matplotlib, sklearn, seaborn, pyyaml, websocket, python-dotenv
-
-Mac:
-pip3 install pandas, numpy, tensorflow, python-binance, python-kucoin, boto3, matplotlib, sklearn, seaborn, pyyaml, websocket, python-dotenv

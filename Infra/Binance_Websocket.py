@@ -4,8 +4,8 @@ import websockets
 import multiprocessing
 import json
 
-#
 
+#Build Websocket Class
 class binance_websocket_raw():
 
     def __init__(self,queue,coins = []):
@@ -14,7 +14,7 @@ class binance_websocket_raw():
         self.params = self.generate_params(coins)
         self.request = self.generate_request()
 
-    def generate_params(self,coins): # the params will be used to generate the request
+    def generate_params(self,coins): #Generate request paramaters
         if coins == []:
             # get all market tickers if no coin is specified
             return '!ticker@arr'
@@ -23,17 +23,17 @@ class binance_websocket_raw():
             params.append(coin.lower()+'@trade')
         return params
 
-    def generate_request(self): # request will be converted to a json and sent to the endpoint
+    def generate_request(self): #Send subscribe request to the endpoint.
         request = {}
         params = []
         for param in self.params:
             params.append(param)
         request["method"] = "SUBSCRIBE"
         request["params"] = params
-        request["id"] = 1 # idk what this is but whatever positive integer works here
+        request["id"] = 1 #Internal ID, not used by us at this point. 
         return request
 
-    async def run(self): # poweroverwhelming
+    async def run(self): #Full asynchronous run. 
         try:
             async with websockets.connect('wss://stream.binance.com:9443/ws') as websocket:
                 await websocket.send(json.dumps(self.request))
@@ -45,10 +45,11 @@ class binance_websocket_raw():
             import traceback
             print(traceback.format_exc())
     
+    #Non-Async Wrapper
     def start(self):
         self.run()
 
-
+#Async Script Start
 async def main():
     q = multiprocessing.Queue()
     coins = ['BTCUSDT','ETHUSDT']
