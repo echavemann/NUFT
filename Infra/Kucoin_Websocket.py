@@ -9,7 +9,6 @@ class kucoin_websocket():
     def __init__(self, queue, topics = []):
         self.queue = queue
         self.topics = topics
-        
         self.sessionID, self.wsEndPoint, self.timeOut = self._getWSEndpoint()
         self.MSG = self._getMSG()
         asyncio.run(self._run())

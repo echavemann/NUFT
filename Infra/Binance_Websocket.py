@@ -6,7 +6,7 @@ import json
 
 
 #Build Websocket Class
-class binance_websocket_raw():
+class Binance_Websocket():
 
     def __init__(self,queue,coins = []):
         self.queue = queue
@@ -53,7 +53,7 @@ class binance_websocket_raw():
 async def main():
     q = multiprocessing.Queue()
     coins = ['BTCUSDT','ETHUSDT']
-    bwr = binance_websocket_raw(q,coins=coins)
+    bwr = Binance_Websocket(q,coins=coins)
     # this example's getting market tickers for the specified coin types here, per the doc of binance, tickers come once every sec
     # if need sth else(like order book) just change generate_params's '@ticker' to whatever u want
     # or leave coins empty to get all market tickers

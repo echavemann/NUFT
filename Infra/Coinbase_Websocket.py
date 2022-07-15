@@ -5,7 +5,7 @@ import multiprocessing
 import json
 
 # Creating Coinbase websocket class
-class coinbase_websocket_raw():
+class Coinbase_Websocket():
 
 
     #Passing queue and other relevant information
@@ -45,7 +45,7 @@ async def main():
     ids = ['BTC-USD','ETH-USD']
     channels = ["ticker"]
     socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = coinbase_websocket_raw(q,socket,ids,channels)
+    cwr = Coinbase_Websocket(q,socket,ids,channels)
     await cwr.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
