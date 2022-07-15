@@ -7,6 +7,8 @@ import json
 # Creating Coinbase websocket class
 class coinbase_websocket_raw():
 
+
+    #Passing queue and other relevant information
     def __init__(self, queue, socket, ids = [], channels = []):
         self.queue = queue
         self.socket = socket
@@ -33,9 +35,11 @@ class coinbase_websocket_raw():
             import traceback
             print(traceback.format_exc())
 
+    #Non-Async Wrapper
     def start(self):
         self.run()
-    
+
+#Async Script Start
 async def main(): 
     q = multiprocessing.Queue()
     ids = ['BTC-USD','ETH-USD']
