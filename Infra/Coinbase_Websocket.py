@@ -48,5 +48,3 @@ async def main(coins):
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run(coins = ['BTC-USD','ETH-USD']):
     asyncio.run(main(coins))
-
-run()

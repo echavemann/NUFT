@@ -8,7 +8,7 @@ import json
 from uuid import uuid4
 
 
-class kucoin_websocket_raw():
+class Kucoin_Websocket():
     
     def __init__(self,queue,topics = []):
         self.token = ''
@@ -62,14 +62,11 @@ class kucoin_websocket_raw():
 
 async def main():
     q = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q,['/market/ticker:all','/market/level2:BTC-USDT'])
+    ws = Kucoin_Websocket(q,['/market/ticker:all','/market/level2:BTC-USDT'])
     ws.get_ws()
-    print(ws.wsendpoint)
     await ws.get_id()
     ws.get_ws()
     await ws._run()
 
 def run():
     asyncio.run(main())
-
-run()

@@ -12,12 +12,12 @@ import asyncio
 #Stage code
 async def main(coins):
 	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-		# executor.submit(ks.run(coins))
-		# executor.submit(cb.run(coins))
-		# executor.submit(bc.run(coins))
-		executor.submit(kr.run(coins))
+		executor.submit(ks.run)
+		executor.submit(cb.run)
+		executor.submit(bc.run)
+		executor.submit(kr.run)
 
 #Run code
 coins = []
 if __name__ == '__main__':
-	asyncio.get_event_loop().run_until_complete((main(coins)))
+	asyncio.get_event_loop().run_until_complete(main(coins))
