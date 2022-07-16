@@ -16,7 +16,7 @@ class kraken_websocket_raw():
     def on_open(self): # Generates a subscribe message to be converted into json to be sent to endpoint
         subscribe_message = {}
         subscribe_message["event"] = "subscribe"
-        subscribe_message["subscription"] = {"name":"trade"}
+        subscribe_message["subscription"] = {"name":"ticker"}
         pairs = []
         for coin in self.coins:
             pairs.append(coin)
