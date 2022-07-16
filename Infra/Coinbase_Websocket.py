@@ -6,8 +6,6 @@ import json
 
 # Creating Coinbase websocket class
 class Coinbase_Websocket():
-
-
     #Passing queue and other relevant information
     def __init__(self, queue, socket, ids = [], channels = []):
         self.queue = queue
@@ -30,7 +28,7 @@ class Coinbase_Websocket():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
-                    print('Coinbase Message Received')
+                    print('Coinbase')
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -40,14 +38,15 @@ class Coinbase_Websocket():
         self.run()
 
 #Async Script Start
-async def main(): 
+async def main(coins): 
     q = multiprocessing.Queue()
-    ids = ['BTC-USD','ETH-USD']
     channels = ["ticker"]
     socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = Coinbase_Websocket(q,socket,ids,channels)
+    cwr = Coinbase_Websocket(q,socket,coins,channels)
     await cwr.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run():
-    asyncio.run(main())
+def run(coins = ['BTC-USD','ETH-USD']):
+    asyncio.run(main(coins))
+
+run()

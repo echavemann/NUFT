@@ -30,6 +30,7 @@ class kraken_websocket_raw():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
+                    print('Kraken')
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -46,5 +47,3 @@ async def main(coins):
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run(coins = ["XBT/USD","XBT/EUR"]):
     asyncio.run(main(coins))
-
-run()

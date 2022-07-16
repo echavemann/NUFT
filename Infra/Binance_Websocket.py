@@ -61,5 +61,3 @@ async def main(coins):
 #Non-async wrapper so MP can run it. 
 def run(coins = ['BTCUSDT','ETHUSDT']):
     asyncio.run(main(coins))
-
-run()
