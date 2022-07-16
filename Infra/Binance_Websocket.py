@@ -50,9 +50,8 @@ class Binance_Websocket():
         self.run()
 
 #Async Script Start
-async def main():
+async def main(coins):
     q = multiprocessing.Queue()
-    coins = ['BTCUSDT','ETHUSDT']
     bwr = Binance_Websocket(q,coins=coins)
     # this example's getting market tickers for the specified coin types here, per the doc of binance, tickers come once every sec
     # if need sth else(like order book) just change generate_params's '@ticker' to whatever u want
@@ -60,5 +59,7 @@ async def main():
     await bwr.run()
 
 #Non-async wrapper so MP can run it. 
-def run():
-    asyncio.run(main())
+def run(coins = ['BTCUSDT','ETHUSDT']):
+    asyncio.run(main(coins))
+
+run()

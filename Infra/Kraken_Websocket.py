@@ -21,7 +21,6 @@ class kraken_websocket_raw():
         for coin in self.coins:
             pairs.append(coin)
         subscribe_message["pair"] = pairs
-        print(subscribe_message)
         return subscribe_message
     
     async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
@@ -31,7 +30,6 @@ class kraken_websocket_raw():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
-                    print(message)
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -39,14 +37,14 @@ class kraken_websocket_raw():
     def start(self):
         self.run()
     
-async def main(): 
+async def main(coins): 
     q = multiprocessing.Queue()
-    coins = ["XBT/USD","XRP/USD"]
     socket = 'wss://ws.kraken.com/'
     kws = kraken_websocket_raw(q,socket,coins)
     await kws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run():
-    asyncio.run(main())
+def run(coins = ["XBT/USD","XBT/EUR"]):
+    asyncio.run(main(coins))
+
 run()
