@@ -5,7 +5,7 @@ import multiprocessing
 import json
 
 # Creating Kraken websocket class
-class Kraken_Websocket():
+class kraken_websocket_raw():
 
     def __init__(self, queue, socket, ids = [], channels = []):
         self.queue = queue
