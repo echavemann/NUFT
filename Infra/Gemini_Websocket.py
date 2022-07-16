@@ -7,23 +7,40 @@ import time
 # Creating Gemini websocket class
 class Gemini_Websocket():
 
-    def __init__(self, queue, coins):
+    def __init__(self, queue, socket, coins = []):
         self.queue = queue
         self.coins = coins
-        self.socket = "wss://api.gemini.com/v2/marketdata"
+        self.socket = socket
         self.sub_message = self.on_open()
+        self.update_message = self.update_response()
 
+    #generates a subscribe message to be converted into json to be sent to endpoint
     def on_open(self):
         subscribe_message = {}
         subscribe_message["type"] = "subscribe"
-        subscribe_message["subscriptions"] = [{"name":"l2","symbols":["BTCUSD","ETHUSD","ETHBTC"]}]
+        subscribe_message["subscriptions"] = [{"name":"l2","symbols":self.coins}]
+        return subscribe_message
+
+#Ignore
+    def update_response(self):
+        subscribe_message = {}
+        subscribe_message["type"] = "l2_updates"
+        subscribe_message["subscriptions"] = [{"symbols":self.coins[0]}]
+        return subscribe_message
+
+    def update_response(self):
+        subscribe_message = {}
+        subscribe_message["type"] = "update"
+        subscribe_message["subscriptions"] = [{"symbols":self.coins[0]}]
         return subscribe_message
     
     async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
         try:
             async with websockets.connect(self.socket) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
+                await websocket.send(json.dumps(self.update_message))  #Takes around 20 seconds for update messages to show up...
                 while True:
+                    
                     message = await websocket.recv()
                     self.queue.put(message)
                     print('Gemini Data Received')
@@ -35,13 +52,14 @@ class Gemini_Websocket():
     def start(self):
         self.run()
     
-async def main(): 
+async def main(coins): 
     q = multiprocessing.Queue()
-    gws = Gemini_Websocket(q,[])
+    socket = 'wss://api.gemini.com/v2/marketdata'
+    gws = Gemini_Websocket(q, socket, coins)
     await gws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run():
-    asyncio.run(main())
+def run(coins = ["BTCUSD","ETHUSD","ETHBTC"]):
+    asyncio.run(main(coins))
 
 run()
