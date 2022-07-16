@@ -21,17 +21,11 @@ class Gemini_Websocket():
         subscribe_message["subscriptions"] = [{"name":"l2","symbols":self.coins}]
         return subscribe_message
 
-#Ignore
+    #sent to endpoint for updating level 2 data response
     def update_response(self):
         subscribe_message = {}
         subscribe_message["type"] = "l2_updates"
-        subscribe_message["subscriptions"] = [{"symbols":self.coins[0]}]
-        return subscribe_message
-
-    def update_response(self):
-        subscribe_message = {}
-        subscribe_message["type"] = "update"
-        subscribe_message["subscriptions"] = [{"symbols":self.coins[0]}]
+        subscribe_message["subscriptions"] = [{"symbols":self.coins}]
         return subscribe_message
     
     async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
@@ -40,7 +34,6 @@ class Gemini_Websocket():
                 await websocket.send(json.dumps(self.sub_message))
                 await websocket.send(json.dumps(self.update_message))  #Takes around 20 seconds for update messages to show up...
                 while True:
-                    
                     message = await websocket.recv()
                     self.queue.put(message)
                     print('Gemini Data Received')
