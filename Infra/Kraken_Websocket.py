@@ -4,21 +4,23 @@ import websockets
 import multiprocessing
 import json
 
-# Creating Coinbase websocket class
-class Coinbase_Websocket():
-    #Passing queue and other relevant information
-    def __init__(self, queue, socket, ids = [], channels = []):
+# Creating Kraken websocket class
+class kraken_websocket_raw():
+
+    def __init__(self, queue, socket, coins = []):
         self.queue = queue
         self.socket = socket
-        self.ids = ids
-        self.channels = channels
+        self.coins = coins
         self.sub_message = self.on_open()
     
     def on_open(self): # Generates a subscribe message to be converted into json to be sent to endpoint
         subscribe_message = {}
-        subscribe_message["type"] = "subscribe"
-        subscribe_message["product_ids"] = self.ids
-        subscribe_message["channels"] = self.channels
+        subscribe_message["event"] = "subscribe"
+        subscribe_message["subscription"] = {"name":"ticker"}
+        pairs = []
+        for coin in self.coins:
+            pairs.append(coin)
+        subscribe_message["pair"] = pairs
         return subscribe_message
     
     async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
@@ -28,23 +30,20 @@ class Coinbase_Websocket():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
-                    print('Coinbase')
+                    print('Kraken')
         except Exception:
             import traceback
             print(traceback.format_exc())
 
-    #Non-Async Wrapper
     def start(self):
         self.run()
-
-#Async Script Start
+    
 async def main(coins): 
     q = multiprocessing.Queue()
-    channels = ["ticker"]
-    socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = Coinbase_Websocket(q,socket,coins,channels)
-    await cwr.run()
+    socket = 'wss://ws.kraken.com/'
+    kws = kraken_websocket_raw(q,socket,coins)
+    await kws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run(coins = ['BTC-USD','ETH-USD']):
+def run(coins = ["XBT/USD","XBT/EUR"]):
     asyncio.run(main(coins))
