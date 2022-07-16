@@ -3,6 +3,7 @@ import concurrent.futures as cf
 import Binance_Websocket as bc
 import Kucoin_Websocket as ks
 import Coinbase_Websocket as cb
+import Kraken_Websocket as kr
 import pandas as pd
 import asyncio
 
