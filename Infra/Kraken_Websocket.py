@@ -28,7 +28,7 @@ class Kraken_Websocket():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
-                    print('Coinbase Message Received')
+                    print('Kraken Message Received')
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -40,9 +40,9 @@ async def main():
     q = multiprocessing.Queue()
     ids = ['BTC-USD','ETH-USD']
     channels = ["ticker"]
-    socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = coinbase_websocket_raw(q,socket,ids,channels)
-    await cwr.run()
+    socket = 'wss://ws.kraken.com/'
+    kws = kraken_websocket_raw(q,socket,ids,channels)
+    await kws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run():
