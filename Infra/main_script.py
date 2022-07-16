@@ -12,9 +12,10 @@ import asyncio
 #Stage code
 async def main():
 	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
-		executor.submit(ks.run)
-		executor.submit(cb.run)
-		executor.submit(bc.run)
+		# executor.submit(ks.run)
+		# executor.submit(cb.run)
+		# executor.submit(bc.run)
+		executor.submit(kr.run)
 
 #Run code
 if __name__ == '__main__':
