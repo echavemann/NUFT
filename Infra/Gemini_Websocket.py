@@ -36,6 +36,8 @@ class Gemini_Websocket():
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
+                    if self.queue.full():
+                        pass
                     print('Gemini Data Received')
                     print(message)
         except Exception:

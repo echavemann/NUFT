@@ -12,7 +12,8 @@ import asyncio
 
 #Stage code
 async def main(coins):
-	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
+	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor
+	#NO SEMICOLONS!!
 		executor.submit(ks.run)
 		executor.submit(cb.run)
 		executor.submit(bc.run)
