@@ -26,7 +26,8 @@ class CLI():
     def execute_command(self):
         if (self.parse().cmd == "run"):
             Coinbase_Websocket.run()
-            
+
+# Running the CLI, takes in an argString (To be input from GUI)           
 def run(str):
     cli = CLI(str)
     cli.execute_command()
