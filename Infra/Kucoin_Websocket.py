@@ -71,5 +71,3 @@ async def main():
 
 def run():
     asyncio.run(main())
-
-run()
