@@ -1,35 +1,33 @@
 # Command Line Interface 
 import argparse
 import sys
-import multiprocessing as mp
-import concurrent.futures as cf
-import Binance_Websocket as bc
-import Kucoin_Websocket as ks
-import Coinbase_Websocket as cb
-import Kraken_Websocket as kr
-import Gemini_Websocket as gm
-import pandas as pd
-import asyncio
-from main_script import start
+import Coinbase_Websocket
+import shlex
 
+# Command Line Interface Class 
 class CLI():
 
-    def __init__(self):
+    def __init__(self, argString):
+        # Defines the list of commands available to the user
         self.commands = {
         "run" : "Run"}
         self.parser = argparse.ArgumentParser(description="NUFT Command Line Interface")
-        
+        self.argString = argString
+    
+    # Add arguments such as positional or flag args here 
     def parse(self):
-        self.parser.add_argument("cmd", type=str, choices=self.commands)
-        parsed_args = self.parser.parse_args()
+        #Example run command 
+        self.parser.add_argument("cmd", type=str, choices=self.commands, help="Type a cmd from the list of available commands")
+
+        parsed_args = self.parser.parse_args(shlex.split(self.argString))
         return parsed_args
 
-    def run_command(self):
+    # Determines the parsed command and runs the appropriate funciton 
+    def execute_command(self):
         if (self.parse().cmd == "run"):
-            print("hi")
-            #Coinbase_Websocket.run()
+            Coinbase_Websocket.run()
             
-
-if __name__ == "__main__":
-    cli = CLI()
-    cli.run_command()
+def run(str):
+    cli = CLI(str)
+    cli.execute_command()
+    
