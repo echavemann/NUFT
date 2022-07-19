@@ -1,4 +1,5 @@
 import dearpygui.dearpygui as dpg
+import CLI
 
 dpg.create_context()
 dpg.create_viewport(title="NUFT Command Line Interface", width=800, height=600)
