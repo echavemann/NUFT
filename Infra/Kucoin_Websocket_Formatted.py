@@ -26,7 +26,6 @@ class kucoin_websocket_raw():
     def get_ws(self):
         r = requests.post('https://api.kucoin.com/api/v1/bullet-public')
         r = r.json()
-        # print(r)
         self.token = r['data']['token']
         self.endpoint = r['data']['instanceServers'][0]['endpoint']
         self.timeout = int(r['data']['instanceServers'][0]['pingTimeout'] / 1000) - 2
@@ -39,7 +38,6 @@ class kucoin_websocket_raw():
         async with websockets.connect(self.wsendpoint) as websocket:
             message = await websocket.recv()
             self.connectid = message.split(',')[0].split(':')[1].replace('"', '')
-            # print(self.connectid)
             await websocket.close()
             
     #woooo
