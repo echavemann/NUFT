@@ -5,7 +5,9 @@ import requests
 import multiprocessing
 import time
 import json
+from datetime import datetime
 from uuid import uuid4
+import pandas as pd
 
 
 class kucoin_websocket_raw():
@@ -24,6 +26,7 @@ class kucoin_websocket_raw():
     def get_ws(self):
         r = requests.post('https://api.kucoin.com/api/v1/bullet-public')
         r = r.json()
+        # print(r)
         self.token = r['data']['token']
         self.endpoint = r['data']['instanceServers'][0]['endpoint']
         self.timeout = int(r['data']['instanceServers'][0]['pingTimeout'] / 1000) - 2
@@ -36,6 +39,7 @@ class kucoin_websocket_raw():
         async with websockets.connect(self.wsendpoint) as websocket:
             message = await websocket.recv()
             self.connectid = message.split(',')[0].split(':')[1].replace('"', '')
+            # print(self.connectid)
             await websocket.close()
             
     #woooo
@@ -49,13 +53,33 @@ class kucoin_websocket_raw():
                         "topic": topic,
                         "response": True
                     }))
-
                 while True:
+                    ### 07/22/2022 
+                    ### Formatting Stuff Starts Here
+                    # Receive Message
                     message = await websocket.recv()
+                    # Translate type str to json
+                    temp_json = json.loads(message)
+                    # Set variables that will be entered into DataFrame
+                    msg_data = []
+                    time_id = []
+                    # If the request is a message, get the DateTime from the json
+                    if temp_json['type'] == 'message':
+                        curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
+                        # Prep entry data for the DataFrame
+                        msg_data = {
+                            'exchange': 'kucoin',
+                            'ticker': temp_json['subject'], 
+                            'price': temp_json['data']['price'],
+                        }
+                        # Prep index for DataFrame
+                        time_id = [curr_dt]
                     if self.queue.full():
                         print('working')
-                    self.queue.put(message)
-                    print('Kucoin')
+                    # If data is relevant, queue DataFrame
+                    if msg_data != [] and time_id != []:
+                        df = pd.DataFrame(data = msg_data, index = time_id)
+                        self.queue.put(df)
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -71,3 +95,5 @@ async def main():
 
 def run():
     asyncio.run(main())
+
+run()
