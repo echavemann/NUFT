@@ -55,8 +55,7 @@ class kucoin_websocket_raw():
                         "response": True
                     }))
                 while True:
-                    ### 07/22/2022 
-                    ### Formatting Stuff Starts Here
+                    ### ormatting Stuff Starts Here
                     # Receive Message
                     message = await websocket.recv()
                     # Translate type str to json
@@ -65,7 +64,6 @@ class kucoin_websocket_raw():
                     msg_data = []
                     time_id = []
                     curr_dt = None
-                    
                     # If the request is a message, get the DateTime from the json
                     if temp_json['type'] == 'message':
                         if temp_json['topic'] == '/market/ticker:all':
@@ -78,7 +76,6 @@ class kucoin_websocket_raw():
                             }
                             # Prep index for DataFrame
                             time_id = [curr_dt]
-                        ### Level 2 Data Attempt 1
                         # elif temp_json['topic'] == '/market/level2:BTC-USDT':
                         #     # Convert time to Datetime
                         #     curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -100,7 +97,6 @@ class kucoin_websocket_raw():
                         #             print(traceback.format_exc())                                
                     if self.queue_1.full():
                         print('working')
-                    ### Level 2 Data Attempt 1
                     # if self.queue_2.full():
                     #     print('working 2')
                     # If data is relevant, queue DataFrame
