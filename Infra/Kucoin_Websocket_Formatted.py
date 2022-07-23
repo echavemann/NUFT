@@ -65,41 +65,42 @@ class kucoin_websocket_raw():
                     msg_data = []
                     time_id = []
                     curr_dt = None
-                    # If the request is a message, get the DateTime from the json
-                    # if temp_json['topic']
                     print(temp_json)
-                    # print(temp_json['topic'])
-                    if temp_json['type'] == 'message':
-                        if temp_json['topic'] == '/market/ticker:all':
-                            curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
-                            # Prep entry data for the DataFrame
-                            msg_data = {
-                                'exchange': 'kucoin',
-                                'ticker': temp_json['subject'], 
-                                'price': temp_json['data']['price'],
-                            }
-                            # Prep index for DataFrame
-                            time_id = [curr_dt]
-                        elif temp_json['topic'] in level_two_list:
-                            # Prep entry data for DataFrame
-                            msg_data = {
-                                'exchange': ''
-                                'ticker': temp_json['subject'],
-                                'asks price': temp_json['data']['changes']['asks'][0]
-                                'asks size':
-                                'bids price':
-                                'bids size':
-                                
-                            }
-                    if self.queue_1.full():
-                        print('working')
-                    if self.queue_2.full():
-                        print('working 2')
-                    # If data is relevant, queue DataFrame
-                    if msg_data != [] and time_id != []:
-                        df = pd.DataFrame(data = msg_data, index = time_id)
-                        self.queue_1.put(df)
-                        # print('culture')
+                    # If the request is a message, get the DateTime from the json
+                    # if temp_json['type'] == 'message':
+                    #     if temp_json['topic'] == '/market/ticker:all':
+                    #         curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
+                    #         # Prep entry data for the DataFrame
+                    #         msg_data = {
+                    #             'exchange': 'kucoin',
+                    #             'ticker': temp_json['subject'], 
+                    #             'price': temp_json['data']['price'],
+                    #         }
+                    #         # Prep index for DataFrame
+                    #         time_id = [curr_dt]
+                    #     elif temp_json['topic'] == '/market/level2:BTH-USDT':
+                    #         # Convert time to Datetime
+                    #         curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
+                    #         # Prep entry data for DataFrame
+                    #         msg_data = {
+                    #             'exchange': 'kucoin',
+                    #             'ticker': temp_json['subject'],
+                    #             'asks price': temp_json['data']['changes']['asks'][0],
+                    #             'asks size': temp_json['data']['changes']['asks'][1],
+                    #             'bids price': temp_json['data']['changes']['bids'][0],
+                    #             'bids size': temp_json['data']['changes']['bids'][1]
+                    #         }
+                    #         time_id = [curr_dt]
+                    # if self.queue_1.full():
+                    #     print('working')
+                    # if self.queue_2.full():
+                    #     print('working 2')
+                    # # If data is relevant, queue DataFrame
+                    # if msg_data != [] and time_id != []:
+                    #     df = pd.DataFrame(data = msg_data, index = time_id)
+                    #     print(df)
+                    #     self.queue_1.put(df)
+                    #     # print('culture')
                     i += 1
                     
         except Exception:
@@ -109,7 +110,7 @@ class kucoin_websocket_raw():
 async def main():
     q = multiprocessing.Queue()
     r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTH-USDT'])
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/level2:BTH-USDT'])
     ws.get_ws()
     await ws.get_id()
     ws.get_ws()
