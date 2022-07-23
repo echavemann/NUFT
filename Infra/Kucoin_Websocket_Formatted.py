@@ -14,10 +14,10 @@ level_two_list = ['/market/level2:BTC-USDT']
 
 class kucoin_websocket_raw():
 
-    def __init__(self, queue_1, topics = []):
+    def __init__(self, queue_1, queue_2, topics = []):
         self.token = ''
         self.queue_1 = queue_1
-        # self.queue_2 = queue_2
+        self.queue_2 = queue_2
         self.endpoint = ''
         self.connectid = ''
         self.wsendpoint = ''
@@ -55,6 +55,7 @@ class kucoin_websocket_raw():
                         "response": True
                     }))
                 while True:
+                    ### 07/22/2022 
                     ### Formatting Stuff Starts Here
                     # Receive Message
                     message = await websocket.recv()
@@ -64,6 +65,7 @@ class kucoin_websocket_raw():
                     msg_data = []
                     time_id = []
                     curr_dt = None
+                    
                     # If the request is a message, get the DateTime from the json
                     if temp_json['type'] == 'message':
                         if temp_json['topic'] == '/market/ticker:all':
@@ -76,33 +78,33 @@ class kucoin_websocket_raw():
                             }
                             # Prep index for DataFrame
                             time_id = [curr_dt]
-                        # elif temp_json['topic'] == '/market/level2:BTC-USDT':
-                        #     # Convert time to Datetime
-                        #     curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
-                        #     print(temp_json['data']['changes'])
-                        #     if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
-                        #         try:
-                        #             # Prep entry data for DataFrame
-                        #             msg_data = {
-                        #                 'exchange': 'kucoin',
-                        #                 'ticker': temp_json['subject'],
-                        #                 'asks price': temp_json['data']['changes']['asks'][0][0],
-                        #                 'asks size': temp_json['data']['changes']['asks'][0][1],
-                        #                 'bids price': temp_json['data']['changes']['bids'][0][0],
-                        #                 'bids size': temp_json['data']['changes']['bids'][0][1]
-                        #             }
-                        #             print(msg_data)
-                        #             time_id = [curr_dt]
-                        #         except:
-                        #             print(traceback.format_exc())                                
+                        elif temp_json['topic'] == '/market/level2:BTC-USDT':
+                            # Convert time to Datetime
+                            curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
+                            print(temp_json['data']['changes'])
+                            if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
+                                try:
+                                    # Prep entry data for DataFrame
+                                    msg_data = {
+                                        'exchange': 'kucoin',
+                                        'ticker': temp_json['subject'],
+                                        'asks price': temp_json['data']['changes']['asks'][0][0],
+                                        'asks size': temp_json['data']['changes']['asks'][0][1],
+                                        'bids price': temp_json['data']['changes']['bids'][0][0],
+                                        'bids size': temp_json['data']['changes']['bids'][0][1]
+                                    }
+                                    print(msg_data)
+                                    time_id = [curr_dt]
+                                except:
+                                    print(traceback.format_exc())                                
                     if self.queue_1.full():
                         print('working')
-                    # if self.queue_2.full():
-                    #     print('working 2')
+                    if self.queue_2.full():
+                        print('working 2')
                     # If data is relevant, queue DataFrame
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        # print(df)
+                        print(df)
                         self.queue_1.put(df)
                     
         except Exception:
@@ -111,8 +113,8 @@ class kucoin_websocket_raw():
 
 async def main():
     q = multiprocessing.Queue()
-    # r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+    r = multiprocessing.Queue()
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
     #'/market/ticker:all',
     ws.get_ws()
     await ws.get_id()
