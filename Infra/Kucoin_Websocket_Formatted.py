@@ -55,7 +55,7 @@ class kucoin_websocket_raw():
                         "response": True
                     }))
                 while True:
-                    ### ormatting Stuff Starts Here
+                    ### Formatting Stuff Starts Here
                     # Receive Message
                     message = await websocket.recv()
                     # Translate type str to json
