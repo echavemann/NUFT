@@ -64,13 +64,14 @@ class kucoin_websocket_raw():
                     # Set variables that will be entered into DataFrame
                     msg_data = []
                     time_id = []
+                    curr_dt = None
                     # If the request is a message, get the DateTime from the json
                     # if temp_json['topic']
                     print(temp_json)
                     # print(temp_json['topic'])
                     if temp_json['type'] == 'message':
-                        curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
                         if temp_json['topic'] == '/market/ticker:all':
+                            curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
                             # Prep entry data for the DataFrame
                             msg_data = {
                                 'exchange': 'kucoin',
@@ -83,7 +84,12 @@ class kucoin_websocket_raw():
                             # Prep entry data for DataFrame
                             msg_data = {
                                 'exchange': ''
-                                'ask price': ''
+                                'ticker': temp_json['subject'],
+                                'asks price': temp_json['data']['changes']['asks'][0]
+                                'asks size':
+                                'bids price':
+                                'bids size':
+                                
                             }
                     if self.queue_1.full():
                         print('working')
