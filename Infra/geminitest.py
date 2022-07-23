@@ -11,20 +11,20 @@ class Gemini_Websocket():
         self.queue = queue
         self.coins = coins
         self.socket = socket
-        # self.sub_message = self.on_open()
+        self.sub_message = self.on_open()
 
 
     #generates a subscribe message to be converted into json to be sent to endpoint
-    # def on_open(self):
-    #     subscribe_message = {}
-    #     subscribe_message["type"] = "subscribe"
-    #     subscribe_message["subscriptions"] = [{"name":"l1", "symbols":self.coins}]
-    #     return subscribe_message
+    def on_open(self):
+        subscribe_message = {}
+        subscribe_message["request"] = "/v1/order/events"
+        subscribe_message["nonce"] = time.time()
+        return subscribe_message
     
     async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
         try:
-            async with websockets.connect(self.socket) as websocket:
-                # await websocket.send(json.dumps(self.sub_message))
+            async with websockets.connect(self.socket, max_size=1_000_000_000) as websocket:
+                await websocket.send(json.dumps(self.sub_message))
                 while True:
                     message = await websocket.recv()
                     self.queue.put(message)
@@ -41,11 +41,11 @@ class Gemini_Websocket():
     
 async def main(coins): 
     q = multiprocessing.Queue()
-    socket = 'wss://api.gemini.com/v1/marketdata/BTCUSD'
+    socket = 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(coins) 
     gws = Gemini_Websocket(q, socket, coins)
     await gws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run(coins = ["BTCUSD","ETHUSD","ETHBTC"]):
+def run(coins = ["ETHUSD","ETHBTC"]):
     asyncio.run(main(coins))
 run()
