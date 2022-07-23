@@ -3,6 +3,7 @@ import argparse
 import sys
 import Coinbase_Websocket
 import shlex
+from main_script import activate
 
 # Command Line Interface Class 
 class CLI():
@@ -39,7 +40,8 @@ class CLI():
     def execute_command(self):
         cmd = self.parse().cmd
         if (cmd == "run"):
-            print("run")
+            activate()
+            #Asyncio Run?
         elif (cmd == "stop"):
             print("stop")
         elif (cmd == "backtest"):

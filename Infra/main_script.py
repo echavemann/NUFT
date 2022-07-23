@@ -22,5 +22,6 @@ async def main(coins):
 
 #Run code
 coins = []
-if __name__ == '__main__':
-	asyncio.get_event_loop().run_until_complete(main(coins))
+def activate(coins):
+	if __name__ == '__main__':
+		asyncio.get_event_loop().run_until_complete(main(coins))
