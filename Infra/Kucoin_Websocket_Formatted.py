@@ -62,6 +62,7 @@ class kucoin_websocket_raw():
                     msg_data = []
                     time_id = []
                     # If the request is a message, get the DateTime from the json
+                    print(message)
                     if temp_json['type'] == 'message':
                         curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
                         # Prep entry data for the DataFrame
@@ -78,13 +79,14 @@ class kucoin_websocket_raw():
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
                         self.queue.put(df)
+                        print('culture')
         except Exception:
             import traceback
             print(traceback.format_exc())
 
 async def main():
     q = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q,['/market/ticker:all','/market/level2:BTC-USDT'])
+    ws = kucoin_websocket_raw(q,['/market/ticker:all'])
     ws.get_ws()
     await ws.get_id()
     ws.get_ws()
