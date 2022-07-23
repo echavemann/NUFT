@@ -82,8 +82,8 @@ class kucoin_websocket_raw():
                             # Convert time to Datetime
                             curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
                             print(temp_json['data']['changes'])
-                            # if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
-                            try:
+                            if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
+                            # try:
                                 # Prep entry data for DataFrame
                                 msg_data = {
                                     'exchange': 'kucoin',
@@ -95,8 +95,8 @@ class kucoin_websocket_raw():
                                 }
                                 print(msg_data)
                                 time_id = [curr_dt]
-                            except:
-                                print(traceback.format_exc())                                
+                            # except:
+                            #     print(traceback.format_exc())                                
                     if self.queue_1.full():
                         print('working')
                     if self.queue_2.full():
