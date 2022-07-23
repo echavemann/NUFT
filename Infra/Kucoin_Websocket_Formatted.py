@@ -54,7 +54,7 @@ class kucoin_websocket_raw():
                         "response": True
                     }))
                 i = 0
-                while i < 20:
+                while i < 40:
                     ### 07/22/2022 
                     ### Formatting Stuff Starts Here
                     # Receive Message
@@ -78,19 +78,23 @@ class kucoin_websocket_raw():
                             }
                             # Prep index for DataFrame
                             time_id = [curr_dt]
-                        elif temp_json['topic'] == '/market/level2:BTH-USDT':
+                        elif temp_json['topic'] == '/market/level2:BTC-USDT':
                             # Convert time to Datetime
                             curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
-                            # Prep entry data for DataFrame
-                            msg_data = {
-                                'exchange': 'kucoin',
-                                'ticker': temp_json['subject'],
-                                'asks price': temp_json['data']['changes']['asks'][0],
-                                'asks size': temp_json['data']['changes']['asks'][1],
-                                'bids price': temp_json['data']['changes']['bids'][0],
-                                'bids size': temp_json['data']['changes']['bids'][1]
-                            }
-                            time_id = [curr_dt]
+                            print(temp_json['data']['changes']['asks'])
+                            if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
+                                print('made it')
+                                # Prep entry data for DataFrame
+                                msg_data = {
+                                    'exchange': 'kucoin',
+                                    'ticker': temp_json['subject'],
+                                    'asks price': temp_json['data']['changes']['asks'][0][0],
+                                    'asks size': temp_json['data']['changes']['asks'][0][1],
+                                    'bids price': temp_json['data']['changes']['bids'][0][0],
+                                    'bids size': temp_json['data']['changes']['bids'][0][1]
+                                }
+                                print(msg_data)
+                                time_id = [curr_dt]
                     if self.queue_1.full():
                         print('working')
                     if self.queue_2.full():
@@ -110,7 +114,8 @@ class kucoin_websocket_raw():
 async def main():
     q = multiprocessing.Queue()
     r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/level2:BTC-USDT'])
+    #'/market/ticker:all',
     ws.get_ws()
     await ws.get_id()
     ws.get_ws()
