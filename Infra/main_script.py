@@ -14,11 +14,6 @@ import asyncio
 async def main(coins):
 	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
 	#NO SEMICOLONS!!
-		kr = kr.Kraken_Websocket(coins)
-		cb = cb.Coinbase_Websocket(coins)
-		ks = ks.Kucoin_Websocket(coins)
-		bc = bc.Binance_Websocket(coins)
-		gm = gm.Gemini_Websocket(coins)
 		executor.submit(ks.run)
 		executor.submit(cb.run)
 		executor.submit(bc.run)
@@ -27,6 +22,5 @@ async def main(coins):
 
 #Run code
 coins = []
-def activate(coins):
-	if __name__ == '__main__':
-		asyncio.get_event_loop().run_until_complete(main(coins))
+if __name__ == '__main__':
+	asyncio.get_event_loop().run_until_complete(main(coins))
