@@ -11,11 +11,19 @@ class CLI():
         # Defines the list of commands available to the user
         self.commands = {
         "run" : "Run",
+        #Starts all websockets, does not return control flow until all websockets are open. 
         "stop" : "Stop",
+        #Stops all websockets, keeps connection open. 
         "backtest" : "Start Backtest", 
+        #Takes in algorithm path, historical/realtime toggle, and start/end date if historical. Executes backtest. Returns control flow during backtest, but will autoprint result.  
         "systat" : "System Status",
-        "exchstat" : "Exchange Status",
+        #Prints system status, operational and non-operational status of all websockets.
+        "exchstat" : "Algo Status",
+        #Prints performance of all algorithms.
+        "query" : "Query memory",
+        #Given query for backtesting report(s), returns backtesting report(s).
         "train" : "Passing Data ML Training"}
+        #Given ML algorithm path, data query, finds data, trains model, returns control flow during train, but will autoprint result.
         self.parser = argparse.ArgumentParser(description="NUFT Command Line Interface")
         self.argString = argString
     
