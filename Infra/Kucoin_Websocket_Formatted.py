@@ -8,8 +8,9 @@ import json
 from datetime import datetime
 from uuid import uuid4
 import pandas as pd
+import traceback
 
-level_two_list = []
+level_two_list = ['/market/level2:BTC-USDT']
 
 class kucoin_websocket_raw():
 
@@ -53,8 +54,7 @@ class kucoin_websocket_raw():
                         "topic": topic,
                         "response": True
                     }))
-                i = 0
-                while i < 40:
+                while True:
                     ### 07/22/2022 
                     ### Formatting Stuff Starts Here
                     # Receive Message
@@ -81,9 +81,9 @@ class kucoin_websocket_raw():
                         elif temp_json['topic'] == '/market/level2:BTC-USDT':
                             # Convert time to Datetime
                             curr_dt = datetime.utcfromtimestamp(temp_json['data']['sequenceEnd']/1000).strftime('%Y-%m-%d %H:%M:%S')
-                            print(temp_json['data']['changes']['asks'])
-                            if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
-                                print('made it')
+                            print(temp_json['data']['changes'])
+                            # if len(temp_json['data']['changes']['asks']) != 0 and len(temp_json['data']['changes']['bids']) != 0:
+                            try:
                                 # Prep entry data for DataFrame
                                 msg_data = {
                                     'exchange': 'kucoin',
@@ -95,6 +95,8 @@ class kucoin_websocket_raw():
                                 }
                                 print(msg_data)
                                 time_id = [curr_dt]
+                            except:
+                                print(traceback.format_exc())                                
                     if self.queue_1.full():
                         print('working')
                     if self.queue_2.full():
@@ -104,17 +106,15 @@ class kucoin_websocket_raw():
                         df = pd.DataFrame(data = msg_data, index = time_id)
                         print(df)
                         self.queue_1.put(df)
-                        # print('culture')
-                    i += 1
                     
         except Exception:
-            import traceback
+            # import traceback
             print(traceback.format_exc())
 
 async def main():
     q = multiprocessing.Queue()
     r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, r, topics = ['/market/level2:BTC-USDT'])
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
     #'/market/ticker:all',
     ws.get_ws()
     await ws.get_id()
