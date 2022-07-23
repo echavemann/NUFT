@@ -9,12 +9,14 @@ from datetime import datetime
 from uuid import uuid4
 import pandas as pd
 
+level_two_list = []
 
 class kucoin_websocket_raw():
 
-    def __init__(self,queue,topics = []):
+    def __init__(self, queue_1, queue_2, topics = []):
         self.token = ''
-        self.queue = queue
+        self.queue_1 = queue_1
+        self.queue_2 = queue_2
         self.endpoint = ''
         self.connectid = ''
         self.wsendpoint = ''
@@ -51,7 +53,8 @@ class kucoin_websocket_raw():
                         "topic": topic,
                         "response": True
                     }))
-                while True:
+                i = 0
+                while i < 10:
                     ### 07/22/2022 
                     ### Formatting Stuff Starts Here
                     # Receive Message
@@ -62,31 +65,45 @@ class kucoin_websocket_raw():
                     msg_data = []
                     time_id = []
                     # If the request is a message, get the DateTime from the json
-                    print(message)
+                    # if temp_json['topic']
+                    print(temp_json)
+                    # print(temp_json['topic'])
                     if temp_json['type'] == 'message':
                         curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
-                        # Prep entry data for the DataFrame
-                        msg_data = {
-                            'exchange': 'kucoin',
-                            'ticker': temp_json['subject'], 
-                            'price': temp_json['data']['price'],
-                        }
-                        # Prep index for DataFrame
-                        time_id = [curr_dt]
-                    if self.queue.full():
+                        if temp_json['topic'] == '/market/ticker:all':
+                            # Prep entry data for the DataFrame
+                            msg_data = {
+                                'exchange': 'kucoin',
+                                'ticker': temp_json['subject'], 
+                                'price': temp_json['data']['price'],
+                            }
+                            # Prep index for DataFrame
+                            time_id = [curr_dt]
+                        elif temp_json['topic'] in level_two_list:
+                            # Prep entry data for DataFrame
+                            msg_data = {
+                                'exchange': ''
+                                'ask price': ''
+                            }
+                    if self.queue_1.full():
                         print('working')
+                    if self.queue_2.full():
+                        print('working 2')
                     # If data is relevant, queue DataFrame
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        self.queue.put(df)
-                        print('culture')
+                        self.queue_1.put(df)
+                        # print('culture')
+                    i += 1
+                    
         except Exception:
             import traceback
             print(traceback.format_exc())
 
 async def main():
     q = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q,['/market/ticker:all'])
+    r = multiprocessing.Queue()
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTH-USDT'])
     ws.get_ws()
     await ws.get_id()
     ws.get_ws()
