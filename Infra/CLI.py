@@ -24,7 +24,7 @@ commands = {
 @click.group()
 def CLI():
     """
-    Simple CLI built for Northwestern's FinTech Club
+    Simple CLI built for NUFT
     """
     pass
 
@@ -65,12 +65,15 @@ def excstat():
 
 
 @CLI.command(help="Given query for backtesting report(s), returns backtesting report(s).")
-def query():
+@click.argument("query", type=str)
+def query(query):
 
     click.echo("Querying Data")
 
 
 @CLI.command(help="Given ML algorithm path, data query, finds data, trains model, returns control flow during train, but will autoprint result.")
+@click.argument("path")
+@click.argument("query", type=str)
 def train():
 
     click.echo("Training Models")
