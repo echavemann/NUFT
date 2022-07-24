@@ -87,3 +87,6 @@ def query(query):
 def train(path, query):
 
     click.echo("Training Models")
+
+if __name__ == "__main__":
+    CLI().run()
