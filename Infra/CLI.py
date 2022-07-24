@@ -43,34 +43,38 @@ def stop():
 
 
 # backtest Command
+# Required Arguments: [Path, Type of data]
+# Optional Flags: {-t --time: Two str args for start and end time in mm/dd/year format}
 @CLI.command(help="Takes in algorithm path, historical/realtime toggle, and start/end date if historical. Executes backtest. Returns control flow during backtest, but will autoprint result. ")
 @click.argument("path")
 @click.argument("type", type=click.Choice({"h" : "historical", "r" : "realtime"}))
-@click.option("-t", "--time", type=str, nargs=2, help="If historical, pass in the start and end date in the format: mm/dd/yr")
+@click.option("-t", "--time", type=str, nargs=2, help="If historical, pass in the start and end date in the format: mm/dd/yearr")
 def backtest(path, type, time):
 
     click.echo("Running Backtester")
 
-
+# System Status Command
 @CLI.command(help="Prints system status, operational and non-operational status of all websockets.")
 def systat():
 
     click.echo("Displaying System Status")
 
-
+# Excstat command
 @CLI.command(help="Prints performance of all algorithms.")
 def excstat():
 
     click.echo("Displaying Exchange Status")
 
-
+# Query command
+# Required Argument: [Query string]
 @CLI.command(help="Given query for backtesting report(s), returns backtesting report(s).")
 @click.argument("query", type=str)
 def query(query):
 
     click.echo("Querying Data")
 
-
+# ML Training Command
+# Required Arguments: [Path, Query string]
 @CLI.command(help="Given ML algorithm path, data query, finds data, trains model, returns control flow during train, but will autoprint result.")
 @click.argument("path")
 @click.argument("query", type=str)
