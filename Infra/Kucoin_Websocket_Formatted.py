@@ -103,7 +103,7 @@ class kucoin_websocket_raw():
                     # If data is relevant, queue DataFrame
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        # print(df)
+                        print(df)
                         self.queue_1.put(df)
                     
         except Exception:
