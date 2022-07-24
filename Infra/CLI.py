@@ -44,7 +44,10 @@ def stop():
 
 # backtest Command
 @CLI.command(help="Takes in algorithm path, historical/realtime toggle, and start/end date if historical. Executes backtest. Returns control flow during backtest, but will autoprint result. ")
-def backtest():
+@click.argument("path")
+@click.argument("type", type=click.Choice({"h" : "historical", "r" : "realtime"}))
+@click.option("-t", "--time", type=str, nargs=2, help="If historical, pass in the start and end date in the format: mm/dd/yr")
+def backtest(path, type, time):
 
     click.echo("Running Backtester")
 
