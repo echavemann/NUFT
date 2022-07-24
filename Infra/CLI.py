@@ -1,9 +1,9 @@
 import click
 
 # NUFT Command Line Interface
-    
+
 # Dictionary of the list of commands available to the user
-# Not used by Click CLI 
+# Not used by Click CLI, just a visual
 commands = {
 "start" : "Start",
 #Starts all websockets, does not return control flow until all websockets are open. 
@@ -74,10 +74,6 @@ def query(query):
 @CLI.command(help="Given ML algorithm path, data query, finds data, trains model, returns control flow during train, but will autoprint result.")
 @click.argument("path")
 @click.argument("query", type=str)
-def train():
+def train(path, query):
 
     click.echo("Training Models")
-
-CLI()
-
-
