@@ -14,10 +14,10 @@ level_two_list = ['/market/level2:BTC-USDT']
 
 class kucoin_websocket_raw():
 
-    def __init__(self, queue_1, topics = []):
+    def __init__(self, queue_1, queue_2, topics = []):
         self.token = ''
         self.queue_1 = queue_1
-        # self.queue_2 = queue_2
+        self.queue_2 = queue_2
         self.endpoint = ''
         self.connectid = ''
         self.wsendpoint = ''
@@ -111,8 +111,8 @@ class kucoin_websocket_raw():
 
 async def main():
     q = multiprocessing.Queue()
-    # r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+    r = multiprocessing.Queue()
+    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
     #'/market/ticker:all',
     ws.get_ws()
     await ws.get_id()
