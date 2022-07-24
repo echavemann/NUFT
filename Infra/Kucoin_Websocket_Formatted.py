@@ -10,7 +10,7 @@ from uuid import uuid4
 import pandas as pd
 import traceback
 
-level_two_list = ['/market/level2:BTC-USDT']
+coins = ['BTC-USDT']
 
 class kucoin_websocket_raw():
 
@@ -44,6 +44,7 @@ class kucoin_websocket_raw():
             await websocket.close()
             
     #woooo
+    # do we need to rename this?
     async def _run(self):
         try:
             async with websockets.connect(self.wsendpoint, ping_interval=self.timeout, ping_timeout=None) as websocket:
@@ -109,18 +110,32 @@ class kucoin_websocket_raw():
             # import traceback
             print(traceback.format_exc())
 
-async def main():
-    q = multiprocessing.Queue()
-    r = multiprocessing.Queue()
-    ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
-    #'/market/ticker:all',
-    ws.get_ws()
-    await ws.get_id()
-    ws.get_ws()
-    await ws._run()
+    async def _main(self):
+        self.get_ws()
+        await self.get_id()
+        self.get_ws()
+        await self._run()
+
+    def _run_(self):
+        asyncio.run(self._main())
+
+# made these functions
+# async def main():
+#     q = multiprocessing.Queue()
+#     r = multiprocessing.Queue()
+#     ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+#     #'/market/ticker:all',
+#     ws.get_ws()
+#     await ws.get_id()
+#     ws.get_ws()
+#     await ws._run()
 
 
-def run():
-    asyncio.run(main())
+# def run():
+#     asyncio.run(main())
 
-run()
+# run()
+q = multiprocessing.Queue()
+r = multiprocessing.Queue()
+ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+ws._run_()

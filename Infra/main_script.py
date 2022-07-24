@@ -21,7 +21,7 @@ async def main(coins):
 		ks_ws = ks.kucoin_websocket_raw(q1, q2, topics = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
 		# bc = bc.Binance_Websocket(coins)
 		# gm = gm.Gemini_Websocket(coins)
-		executor.submit(ks_ws.run)
+		executor.submit(ks_ws._run_)
 		executor.submit(cb.run)
 		executor.submit(bc.run)
 		executor.submit(kr.run)
