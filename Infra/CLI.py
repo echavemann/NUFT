@@ -55,3 +55,5 @@ class CLI():
 def run(str):
     cli = CLI(str)
     cli.execute_command()
+
+run("stop")
