@@ -1,9 +1,10 @@
 import click
 
 # NUFT Command Line Interface
+# Built using Click (Decorator-Based CLI)
 
 # Dictionary of the list of commands available to the user
-# Not used by Click CLI, just a visual
+# Not used by rest of code, just a visual for now
 commands = {
 "start" : "Start",
 #Starts all websockets, does not return control flow until all websockets are open. 
@@ -27,6 +28,7 @@ def CLI():
     Simple CLI built for NUFT
     """
     pass
+
 
 # Start Command
 @CLI.command(help="Starts all websockets, does not return control flow until all websockets are open.")
@@ -53,17 +55,20 @@ def backtest(path, type, time):
 
     click.echo("Running Backtester")
 
+
 # System Status Command
 @CLI.command(help="Prints system status, operational and non-operational status of all websockets.")
 def systat():
 
     click.echo("Displaying System Status")
 
+
 # Excstat command
 @CLI.command(help="Prints performance of all algorithms.")
 def excstat():
 
     click.echo("Displaying Exchange Status")
+
 
 # Query command
 # Required Argument: [Query string]
@@ -72,6 +77,7 @@ def excstat():
 def query(query):
 
     click.echo("Querying Data")
+
 
 # ML Training Command
 # Required Arguments: [Path, Query string]
