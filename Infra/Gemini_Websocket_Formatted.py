@@ -72,7 +72,7 @@ class Gemini_Websocket():
 async def main(coins): 
     q1 = multiprocessing.Queue()
     q2 = multiprocessing.Queue()
-    # socket1 = 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(coins) 
+    socket1 = 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(coins) 
     socket2 = 'wss://api.gemini.com/v2/marketdata'
 
     gws1 = Gemini_Websocket(q1, q2, socket1, socket2, coins)
