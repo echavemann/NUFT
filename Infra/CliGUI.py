@@ -62,8 +62,8 @@ class CLI_GUI(App):
         # If you pass only a widget in runtouchApp(), a Window will
         # be created and your widget will be added to the window
         # as the root widget.
-        runTouchApp(self.mainbutton)
         self.window.add_widget(self.mainbutton)
+        
 
         # Button 
         self.button = Button(
