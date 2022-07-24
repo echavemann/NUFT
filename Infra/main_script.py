@@ -28,7 +28,9 @@ async def main(coins):
 		executor.submit(gm.run)
 
 #Run code
-coins = []
+coins = ['BTH-USDT']
 def activate(coins):
 	if __name__ == '__main__':
 		asyncio.get_event_loop().run_until_complete(main(coins))
+
+activate(coins)
