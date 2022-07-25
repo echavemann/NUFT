@@ -12,7 +12,7 @@ import traceback
 
 coins = ['BTC-USDT']
 
-class kucoin_websocket_raw():
+class Kucoin_Websocket():
 
     def __init__(self, queue_1, queue_2, topics = []):
         self.token = ''
@@ -137,5 +137,5 @@ class kucoin_websocket_raw():
 # run()
 q = multiprocessing.Queue()
 r = multiprocessing.Queue()
-ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
 ws._run_()

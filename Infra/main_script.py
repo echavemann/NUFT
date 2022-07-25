@@ -18,7 +18,7 @@ async def main(coins):
 		q2 = mp.Queue()
 		# kr = kr.Kraken_Websocket(coins)
 		# cb = cb.Coinbase_Websocket(coins)
-		ks_ws = ks.kucoin_websocket_raw(q1, q2, topics = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
+		ks_ws = ks.Kucoin_Websocket(q1, q2, topics = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
 		# bc = bc.Binance_Websocket(coins)
 		# gm = gm.Gemini_Websocket(coins)
 		executor.submit(ks_ws._run_)
