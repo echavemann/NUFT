@@ -1,0 +1,7 @@
+The only script below Main_Script is CLI!
+
+So Main_Script will get all of the database and websocket imports. 
+
+Then, CLI will import Main_Script, inheriting the imports. 
+
+CLI will be exported to NUFT proper for use, similar to an API. 
