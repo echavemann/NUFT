@@ -4,6 +4,7 @@ import Kucoin.Kucoin_Websocket_Formatted as ks
 import Coinbase.Coinbase_Websocket as cb
 import Gemini.Gemini_Websocket as gm
 import Binance.Binance_Websocket_Formatted as bc
+import Kraken.Kraken_Websocket as kr
 import pandas as pd
 import asyncio
 
