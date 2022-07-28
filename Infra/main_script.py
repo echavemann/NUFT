@@ -14,12 +14,12 @@ import asyncio
 async def main(coins):
 	with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
 	#NO SEMICOLONS!!
-		q1 = mp.Queue()
-		q2 = mp.Queue()
+		level1 = mp.Queue()
+		level2 = mp.Queue()
 		df = pd.DataFrame(data = [])
 		# kr = kr.Kraken_Websocket(coins)
 		# cb = cb.Coinbase_Websocket(coins)
-		ks_ws = ks.Kucoin_Websocket(q1, q2, topics = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
+		ks_ws = ks.Kucoin_Websocket(level1, level2, topics = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
 		# bc = bc.Binance_Websocket(coins)
 		# gm = gm.Gemini_Websocket(coins)
 		# temp_q1_rows = q1.get()
@@ -28,7 +28,7 @@ async def main(coins):
 		# 	pd.concat(df, row)
 		# print(df)
 		executor.submit(ks_ws._run_)
-		executor.submit(print(q1.get()))
+		executor.submit(print(level1.get()))
 
 		# executor.submit(cb.run)
 		# executor.submit(bc.run)
