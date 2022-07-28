@@ -1,8 +1,8 @@
 import multiprocessing as mp
 import concurrent.futures as cf
-import Binance_Websocket as bc
-from Infra.Binance_Websocket import Binance_Websocket
-from Infra.Coinbase_Websocket import Coinbase_Websocket
+import Binance_Websocket_Formatted as bc
+# from Infra.Binance_Websocket import Binance_Websocket
+# from Infra.Coinbase_Websocket import Coinbase_Websocket
 import Kucoin_Websocket_Formatted as ks
 import Coinbase_Websocket as cb
 import Kraken_Websocket as kr
