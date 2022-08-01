@@ -1,7 +1,11 @@
 In order of exeution:
 
+Grid Trading
 Bolinger Bands
 Standard Indicators (RSI and the like)
+  RSI
+  EWM
+  SMA
 Statistical Arbitrage
 Machine Learning Outputs
 Stochastic Processes
