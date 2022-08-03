@@ -7,12 +7,32 @@ import Binance.Binance_Websocket_Formatted as bc
 import Kraken.Kraken_Websocket as kr
 import pandas as pd
 import asyncio
-
+import schedule
+import datetime
+import os
 
 # from Infra.Binance_Websocket import Binance_Websocket
 # from Infra.Coinbase_Websocket import Coinbase_Websocket
 
 # All functions imported need to be non-async! If you commit async functions, our code will not work, and we will have an emergency debugging in your 'honor'.
+
+# Helpers for saving
+def save_df(df):
+    dt = datetime.today()
+    seconds = dt.timestamp()
+    csv_name = 'RAW_DATA_' + seconds +  + '.csv'
+    df.to_csv(csv_name)
+    if os.path.isfile(csv_name):
+        print(csv_name + ' is saved on ' + os.getcwd())
+    else:
+        raise Exception('can not save file\n')
+
+def make_df(queue):
+    df = pd.DataFrame()
+    row_list = queue.get()
+    for row in row_list:
+        pd.concat(df, row)
+    return df
 
 # Stage code
 
@@ -24,6 +44,10 @@ async def main(coins):
         q2 = mp.Queue()
         df = pd.DataFrame(data=[])
 
+        current_df = None
+        schedule.every(3).seconds.do(current_df = make_df(q1))
+        schedule.every(3).seconds.do(save_df(current_df))
+        schedule.run_pending()
         # Stage 1: setting up all the websockets
         binance = bc.Binance_Websocket(q1, coins)
         coinbase = cb.Coinbase_Websocket(
@@ -34,11 +58,6 @@ async def main(coins):
                                      ','.join(coins), 'wss://api.gemini.com/v2/marketdata', coins)
         ks_ws = ks.Kucoin_Websocket(q1, q2, topics=[
                                     '/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
-        # temp_q1_rows = q1.get()
-        # print(temp_q1_rows)
-        # for row in temp_q1_rows:
-        # 	pd.concat(df, row)
-        # print(df)
 
         # Stage 2: running all the websockets
         try:
