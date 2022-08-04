@@ -34,9 +34,7 @@ def make_df(queue):
         pd.concat(df, row)
     return df
 
-# Stage code
-
-
+# Stage code:
 async def main(coins):
     with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
         # NO SEMICOLONS!!
@@ -48,31 +46,34 @@ async def main(coins):
         schedule.every(3).seconds.do(current_df = make_df(q1))
         schedule.every(3).seconds.do(save_df(current_df))
         schedule.run_pending()
-        # Stage 1: setting up all the websockets
-        binance = bc.Binance_Websocket(q1, coins)
-        coinbase = cb.Coinbase_Websocket(
-            q1, 'wss://ws-feed.exchange.coinbase.com', coins, channels=["ticker"])
-        kraken = kr.Kraken_Websocket(
-            q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
-        gemini = gm.Gemini_Websocket(q1, q2, 'wss://api.gemini.com/v1/multimarketdata?symbols=' +
-                                     ','.join(coins), 'wss://api.gemini.com/v2/marketdata', coins)
-        ks_ws = ks.Kucoin_Websocket(q1, q2, topics=[
-                                    '/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)])
 
-        # Stage 2: running all the websockets
-        try:
-            executor.submit(ks_ws._run_)
-        except Exception:
+        # Stage 1: setting up all the websockets
+        # input coins: a list of all coins
+        for each_coin in coins:
+            binance = bc.Binance_Websocket(q1, each_coin)
+            coinbase = cb.Coinbase_Websocket(
+                q1, 'wss://ws-feed.exchange.coinbase.com', each_coin, channels=["ticker"])
+            kraken = kr.Kraken_Websocket(
+                q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
+            gemini = gm.Gemini_Websocket(q1, q2, 'wss://api.gemini.com/v1/multimarketdata?symbols=' +
+                                        ','.join(each_coin), 'wss://api.gemini.com/v2/marketdata', each_coin)
+            ks_ws = ks.Kucoin_Websocket(q1, q2, topics=[
+                                        '/market/ticker:' + ','.join(each_coin), '/market/level2:' + ','.join(each_coin)])
+
+            # Stage 2: running all the websockets
             try:
-                executor.submit(coinbase.run)
+                executor.submit(ks_ws._run_)
             except Exception:
                 try:
-                    executor.submit(binance.run)
+                    executor.submit(coinbase.run)
                 except Exception:
                     try:
-                        executor.submit(kraken.run)
+                        executor.submit(binance.run)
                     except Exception:
-                        executor.submit(gemini.run)
+                        try:
+                            executor.submit(kraken.run)
+                        except Exception:
+                            executor.submit(gemini.run)
 
 # Run code
 coins = ['BTH-USDT']

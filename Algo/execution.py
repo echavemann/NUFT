@@ -75,8 +75,3 @@ def main(inqueue,outqueue):
             result_queue.append(order)
         #QSize is a very broken function, I wouldn't do this. 
         #You don't need to do this function to be honest. 
-    
-    
-        
-    
-    
