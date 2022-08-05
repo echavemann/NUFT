@@ -54,9 +54,9 @@ class Coinbase_Websocket():
         
         
         
-        except Exception:
-            import traceback
-            print(traceback.format_exc())
+        # except Exception:
+        #     import traceback
+        #     print(traceback.format_exc())
 
         
 

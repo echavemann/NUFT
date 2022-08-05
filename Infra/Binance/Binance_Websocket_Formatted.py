@@ -91,4 +91,4 @@ async def main(coins):
 def run(coins = ['BTCUSDT','ETHUSDT']):
     asyncio.run(main(coins))
 
-run()
+# run()
