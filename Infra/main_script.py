@@ -76,17 +76,18 @@ async def main(coins):
                         # except Exception:
                         executor.submit(gemini.run)
                         print('running gemini')
-            print('after')
-            try:
-                print('rows')
-                print(q1.qsize())
-                row = q1.get()
-                if row == None:
-                    break
-                print(row)
-                # print(row)
-            except:
-                print('oh shit')
+            print(q1.empty())
+            while q1.empty() is False:
+                try:
+                    print('rows')
+                    print(q1.qsize())
+                    row = q1.get()
+                    if row == None:
+                        break
+                    print(row)
+                    # print(row)
+                except:
+                    print('oh shit')
             print('outside')            
         # schedule.every(3).seconds.do(current_df = make_df(q1))
         # schedule.every(3).seconds.do(save_df(current_df))
