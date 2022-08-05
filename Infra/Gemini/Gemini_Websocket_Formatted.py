@@ -59,7 +59,7 @@ class Gemini_Websocket():
                                 }
                                 # Prep index for DataFrame
                                 time_id = [curr_dt]
-                                print('GOGOGO')
+                                
 
                     elif temp_json['type'] == 'trade':
                         curr_dt = datetime.utcfromtimestamp(temp_json["timestamp"]/1000).strftime('%Y-%m-%d %H:%M:%S')
