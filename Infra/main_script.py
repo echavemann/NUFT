@@ -54,31 +54,40 @@ async def main(coins):
                 q1, 'wss://ws-feed.exchange.coinbase.com', each_coin, channels=["ticker"])
             # kraken = kr.Kraken_Websocket(
             #     q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
-            gemini = gm.Gemini_Websocket(q1, 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(each_coin), 'wss://api.gemini.com/v2/marketdata', each_coin)
+            gemini = gm.Gemini_Websocket(q1, 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(each_coin), each_coin)
             ks_ws = ks.Kucoin_Websocket(q1, q2, topics=['/market/ticker:' + ','.join(each_coin), '/market/level2:' + ','.join(each_coin)])
 
             # Stage 2: running all the websockets
             print('before')
             try:
                 executor.submit(ks_ws._run_)
-                print('middle')
+                print('running kucoin')
             except Exception:
                 try:
                     executor.submit(coinbase.run)
+                    print('running coinbase')
                 except Exception:
                     try:
                         executor.submit(binance.run)
+                        print('running binance')
                     except Exception:
                         # try:
                         #     executor.submit(kraken.run)
                         # except Exception:
                         executor.submit(gemini.run)
+                        print('running gemini')
             print('after')
             try:
+                print('rows, bitch')
+                print(q1.qsize())
                 row = q1.get()
+                if row == None:
+                    break
                 print(row)
+                # print(row)
             except:
-                print('oh shit')            
+                print('oh shit')
+            print('outside')            
         # schedule.every(3).seconds.do(current_df = make_df(q1))
         # schedule.every(3).seconds.do(save_df(current_df))
         # while True:
