@@ -78,7 +78,7 @@ async def main(coins):
                         print('running gemini')
             print('after')
             try:
-                print('rows, bitch')
+                print('rows')
                 print(q1.qsize())
                 row = q1.get()
                 if row == None:
