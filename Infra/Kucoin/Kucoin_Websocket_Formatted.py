@@ -103,7 +103,7 @@ class Kucoin_Websocket():
                     # If data is relevant, queue DataFrame
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        # print(df)
+                        print(df)
                         self.queue_1.put(df)
                     
         except Exception:
@@ -135,7 +135,7 @@ class Kucoin_Websocket():
 #     asyncio.run(main())
 
 # run()
-q = multiprocessing.Queue()
-r = multiprocessing.Queue()
-ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
-ws._run_()
+# q = multiprocessing.Queue()
+# r = multiprocessing.Queue()
+# ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+# ws._run_()

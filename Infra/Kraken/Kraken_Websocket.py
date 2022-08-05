@@ -7,7 +7,7 @@ import json
 # Creating Kraken websocket class
 
 
-class kraken_websocket_raw():
+class Kraken_Websocket():
 
     def __init__(self, queue, socket, coins=[]):
         self.queue = queue
@@ -44,7 +44,7 @@ class kraken_websocket_raw():
 async def main(coins):
     q = multiprocessing.Queue()
     socket = 'wss://ws.kraken.com/'
-    kws = kraken_websocket_raw(q, socket, coins)
+    kws = Kraken_Websocket(q, socket, coins)
     await kws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
@@ -54,4 +54,4 @@ def run(coins=["XBT/USD", "XBT/EUR"]):
     asyncio.run(main(coins))
 
 
-run()
+# run()
