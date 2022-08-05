@@ -43,9 +43,6 @@ async def main(coins):
         df = pd.DataFrame(data=[])
 
         current_df = None
-        schedule.every(3).seconds.do(current_df = make_df(q1))
-        schedule.every(3).seconds.do(save_df(current_df))
-        schedule.run_pending()
 
         # Stage 1: setting up all the websockets
         # input coins: a list of all coins
@@ -74,6 +71,9 @@ async def main(coins):
                             executor.submit(kraken.run)
                         except Exception:
                             executor.submit(gemini.run)
+            schedule.every(3).seconds.do(current_df = make_df(q1))
+            schedule.every(3).seconds.do(save_df(current_df))
+            schedule.run_pending()
 
 # Run code
 coins = ['BTH-USDT']
