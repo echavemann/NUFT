@@ -1,4 +1,5 @@
-
+#include "vanilla.hpp"
+#include <cmath>
 
 class VanillaOption {
     private:
@@ -17,4 +18,13 @@ class VanillaOption {
     VanillaOption(const VanillaOption& rhs); // copy constructor
     VanillaOption& operator=(const VanillaOption& rhs); // assignment operator
     virtual ~VanillaOption(); // destructor
+
+    double getK() const;
+    double getr() const;
+    double getT() const;
+    double getS() const;
+    double getsigma() const;
+
+    double calc_call_price() const;
+    double calc_put_price() const;
 };
