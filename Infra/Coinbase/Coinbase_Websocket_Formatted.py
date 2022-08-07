@@ -33,12 +33,10 @@ class Coinbase_Websocket():
         try:
             async with websockets.connect(self.socket) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
-                print(self.sub_message)
                 while True:
                     message = await websocket.recv()
                     # print(message)
                     temp_json = json.loads(message)
-                    # print(temp_json)
                     #Setting Variables for Data Frame 
                     msg_data = []
                     time_id = []
@@ -58,7 +56,7 @@ class Coinbase_Websocket():
                         df = pd.DataFrame(data = msg_data, index = time_id)
                         # print(df)
                         self.queue.put(df) 
-                    if temp_json['type'] == 'snapshot':
+                    if temp_json['type'] == 'l2update':
                         print(temp_json)
         except Exception:
             import traceback
@@ -71,7 +69,7 @@ class Coinbase_Websocket():
 #Async Script Start
 async def main(coins): 
     q = multiprocessing.Queue()
-    channels = ['ticker', 'l2_data']
+    channels = ['ticker', 'level2_batch']
     socket = 'wss://ws-feed.exchange.coinbase.com'
     cwr = Coinbase_Websocket(q,socket,coins,channels)
     await cwr.run()
