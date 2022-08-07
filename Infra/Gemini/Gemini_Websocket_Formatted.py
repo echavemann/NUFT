@@ -52,7 +52,7 @@ class Gemini_Websocket():
                                 msg_data = {
                                     'exchange': 'gemini',
                                     'type': 'l2_updates',   
-                                    'symbol': temp_json['symbol'],
+                                    'ticker': temp_json['symbol'],
                                     'action': temp_json['changes'][0][0],
                                     'price': temp_json['changes'][0][1],
                                     'quantity': temp_json['changes'][0][2]
