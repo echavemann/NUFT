@@ -55,17 +55,17 @@ class Coinbase_Websocket():
                         curr_dt = curr_dt.replace('T', ' ')
                         msg_data = {
                                 'exchange': 'coinbase',
-                                'ticker': temp_json['symbol'],
-                                'action': temp_json['side'],
-                                'price': temp_json['price'],
-                                'quantity': temp_json['quantity']
+                                'ticker': temp_json['product_id'],
+                                'side': temp_json['changes'][0][0],
+                                'price': temp_json['changes'][0][1],
+                                'quantity': temp_json['changes'][0][2]
                             }
                         time_id = [curr_dt]
                     if self.queue.full():
                         print('working')
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        # print(df)
+                        print(df)
                         self.queue.put(df) 
         except Exception:
             import traceback
@@ -86,4 +86,4 @@ async def main(coins):
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run(coins = ['BTC-USD','ETH-USD']):
     asyncio.run(main(coins))
-# run()
+run()
