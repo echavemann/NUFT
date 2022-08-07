@@ -15,17 +15,18 @@ from uuid import uuid4
 #Creating Coinbase Websocket Class 
 class Coinbase_Websocket():
     #Passing queue and other relevant information
-    def __init__(self, queue, socket, ids = [], channels = []):
-        self.queue = queue
+    def __init__(self, queue_1, queue_2, socket, coins = [], channels = []):
+        self.queue_1 = queue_1
+        self.queue_2 = queue_2
         self.socket = socket
-        self.ids = ids
+        self.coins= coins
         self.channels = channels
         self.sub_message = self.on_open()
    
     def on_open(self): # Generates a subscribe message to be converted into json to be sent to endpoint
         subscribe_message = {}
         subscribe_message["type"] = "subscribe"
-        subscribe_message["product_ids"] = self.ids
+        subscribe_message["product_ids"] = self.coins
         subscribe_message["channels"] = self.channels
         return subscribe_message
     
@@ -50,6 +51,12 @@ class Coinbase_Websocket():
                             'price': temp_json['price']
                         }
                         time_id = [curr_dt]
+                        if self.queue_1.full():
+                            print('working 1')
+                        if msg_data != [] and time_id != []:
+                            df = pd.DataFrame(data = msg_data, index = time_id)
+                            print(df)
+                            self.queue_1.put(df) 
                     elif temp_json['type'] == 'l2update':
                         curr_dt = temp_json['time'].replace('Z', '')
                         curr_dt = curr_dt.replace('T', ' ')
@@ -61,16 +68,23 @@ class Coinbase_Websocket():
                                 'quantity': temp_json['changes'][0][2]
                             }
                         time_id = [curr_dt]
-                    if self.queue.full():
-                        print('working')
-                    if msg_data != [] and time_id != []:
-                        df = pd.DataFrame(data = msg_data, index = time_id)
-                        print(df)
-                        self.queue.put(df) 
+                        if self.queue_2.full():
+                            print('working 2')
+                        if msg_data != [] and time_id != []:
+                            df = pd.DataFrame(data = msg_data, index = time_id)
+                            print(df)
+                            self.queue_2.put(df) 
+
+
         except Exception:
             import traceback
             print(traceback.format_exc())
 
+    async def _main(self):
+        await self.run()
+
+    def _run_(self):
+        asyncio.run(self._main())
         
 
     #goal is to get the DateTime from the Json and store into tickers 
@@ -78,12 +92,16 @@ class Coinbase_Websocket():
 #Async Script Start
 async def main(coins): 
     q = multiprocessing.Queue()
+    r = multiprocessing.Queue()
     channels = ['ticker', 'level2']
     socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = Coinbase_Websocket(q,socket,coins,channels)
+    cwr = Coinbase_Websocket(q, r, socket,coins,channels)
     await cwr.run()
 
-# Notice: Non-Async Wrapper is required for multiprocessing to run
-def run(coins = ['BTC-USD','ETH-USD']):
-    asyncio.run(main(coins))
-run()
+# q = multiprocessing.Queue()
+# r = multiprocessing.Queue()
+# channels = ['ticker', 'level2']
+# coins = ['BTC-USDT', 'ETH-USDT']
+# socket = 'wss://ws-feed.exchange.coinbase.com'
+# cwr = Coinbase_Websocket(q, r, socket,coins,channels)
+# cwr._run_()
