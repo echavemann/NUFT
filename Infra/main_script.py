@@ -1,7 +1,7 @@
 import concurrent.futures as cf
 import multiprocessing as mp
 import Kucoin.Kucoin_Websocket_Formatted as ks
-import Coinbase.Coinbase_Websocket as cb
+import Coinbase.Coinbase_Websocket_Formatted as cb
 import Gemini.Gemini_Websocket_Formatted as gm
 import Binance.Binance_Websocket_Formatted as bc
 # import Kraken.Kraken_Websocket as kr
@@ -51,8 +51,10 @@ async def main(coins):
         # input coins: a list of all coins
         for each_coin in coins:
             binance = bc.Binance_Websocket(q1, each_coin)
-            coinbase = cb.Coinbase_Websocket(
-                q1, 'wss://ws-feed.exchange.coinbase.com', each_coin, channels=["ticker"])
+            # coinbase = cb.Coinbase_Websocket(
+            #     q1, 'wss://ws-feed.exchange.coinbase.com', each_coin, channels=["ticker"])
+            coinbase = cb.Coinbase_Websocket(q1, q2, 'wss://ws-feed.exchange.coinbase.com', [each_coin], channels = ['ticker', 'level2'])
+
             # kraken = kr.Kraken_Websocket(
             #     q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
             gemini = gm.Gemini_Websocket(q1, 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(each_coin), each_coin)
