@@ -69,7 +69,7 @@ class Coinbase_Websocket():
 #Async Script Start
 async def main(coins): 
     q = multiprocessing.Queue()
-    channels = ['ticker', 'level2_batch']
+    channels = ['ticker', 'level2_updates']
     socket = 'wss://ws-feed.exchange.coinbase.com'
     cwr = Coinbase_Websocket(q,socket,coins,channels)
     await cwr.run()
