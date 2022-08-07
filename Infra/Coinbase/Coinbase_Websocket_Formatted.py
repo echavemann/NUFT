@@ -11,6 +11,7 @@ from datetime import datetime
 from scipy.fft import idst 
 from uuid import uuid4
 
+#https://docs.cloud.coinbase.com/exchange/docs/websocket-channels
 #Creating Coinbase Websocket Class 
 class Coinbase_Websocket():
     #Passing queue and other relevant information
@@ -32,9 +33,12 @@ class Coinbase_Websocket():
         try:
             async with websockets.connect(self.socket) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
+                print(self.sub_message)
                 while True:
                     message = await websocket.recv()
+                    # print(message)
                     temp_json = json.loads(message)
+                    # print(temp_json)
                     #Setting Variables for Data Frame 
                     msg_data = []
                     time_id = []
@@ -52,21 +56,22 @@ class Coinbase_Websocket():
                         print('working')
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        print(df)
+                        # print(df)
                         self.queue.put(df) 
+                    if temp_json['type'] == 'snapshot':
+                        print(temp_json)
         except Exception:
             import traceback
             print(traceback.format_exc())
 
         
 
-
     #goal is to get the DateTime from the Json and store into tickers 
     #then put into database 
 #Async Script Start
 async def main(coins): 
     q = multiprocessing.Queue()
-    channels = ["ticker"]
+    channels = ['ticker', 'l2_data']
     socket = 'wss://ws-feed.exchange.coinbase.com'
     cwr = Coinbase_Websocket(q,socket,coins,channels)
     await cwr.run()
