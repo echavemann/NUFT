@@ -29,6 +29,7 @@ class Coinbase_Websocket():
         return subscribe_message
     
     async def run(self): #Full Asynchronous Run 
+        try:
             async with websockets.connect(self.socket) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
                 while True:
@@ -38,28 +39,39 @@ class Coinbase_Websocket():
                     msg_data = []
                     time_id = []
                     curr_dt = None 
-
-                    if temp_json['type'] == 'message':
-                        curr_dt = datetime.utcfromtimestamp(temp_json['T']/1000).strftime('%Y-%m-%d %H:%M:%S')
+                    if temp_json['type'] == 'ticker':
+                        curr_dt = temp_json['time'].replace('Z', '')
+                        curr_dt = curr_dt.replace('T', ' ')
                         msg_data = {
                             'exchange': 'coinbase',
-                            'ticker': temp_json['subject'],
-                            'price': temp_json['data']['price'],
+                            'ticker': temp_json['product_id'],
+                            'price': temp_json['price']
                         }
-                        
                         time_id = [curr_dt]
-                    
-        
-        
-        
-        
-        
-        # except Exception:
-        #     import traceback
-        #     print(traceback.format_exc())
+                    if self.queue.full():
+                        print('working')
+                    if msg_data != [] and time_id != []:
+                        df = pd.DataFrame(data = msg_data, index = time_id)
+                        print(df)
+                        self.queue.put(df) 
+        except Exception:
+            import traceback
+            print(traceback.format_exc())
 
         
 
 
     #goal is to get the DateTime from the Json and store into tickers 
     #then put into database 
+#Async Script Start
+async def main(coins): 
+    q = multiprocessing.Queue()
+    channels = ["ticker"]
+    socket = 'wss://ws-feed.exchange.coinbase.com'
+    cwr = Coinbase_Websocket(q,socket,coins,channels)
+    await cwr.run()
+
+# Notice: Non-Async Wrapper is required for multiprocessing to run
+def run(coins = ['BTC-USD','ETH-USD']):
+    asyncio.run(main(coins))
+run()
