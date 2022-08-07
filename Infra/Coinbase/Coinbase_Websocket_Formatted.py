@@ -31,7 +31,7 @@ class Coinbase_Websocket():
     
     async def run(self): #Full Asynchronous Run 
         try:
-            async with websockets.connect(self.socket) as websocket:
+            async with websockets.connect(self.socket, max_size = 1_000_000_000) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
                 while True:
                     message = await websocket.recv()
@@ -50,14 +50,23 @@ class Coinbase_Websocket():
                             'price': temp_json['price']
                         }
                         time_id = [curr_dt]
+                    elif temp_json['type'] == 'l2update':
+                        curr_dt = temp_json['time'].replace('Z', '')
+                        curr_dt = curr_dt.replace('T', ' ')
+                        msg_data = {
+                                'exchange': 'coinbase',
+                                'ticker': temp_json['symbol'],
+                                'action': temp_json['side'],
+                                'price': temp_json['price'],
+                                'quantity': temp_json['quantity']
+                            }
+                        time_id = [curr_dt]
                     if self.queue.full():
                         print('working')
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
                         # print(df)
                         self.queue.put(df) 
-                    if temp_json['type'] == 'l2update':
-                        print(temp_json)
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -69,7 +78,7 @@ class Coinbase_Websocket():
 #Async Script Start
 async def main(coins): 
     q = multiprocessing.Queue()
-    channels = ['ticker', 'level2_updates']
+    channels = ['ticker', 'level2']
     socket = 'wss://ws-feed.exchange.coinbase.com'
     cwr = Coinbase_Websocket(q,socket,coins,channels)
     await cwr.run()
@@ -77,4 +86,4 @@ async def main(coins):
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run(coins = ['BTC-USD','ETH-USD']):
     asyncio.run(main(coins))
-run()
+# run()
