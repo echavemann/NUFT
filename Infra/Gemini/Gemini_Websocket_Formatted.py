@@ -74,7 +74,7 @@ class Gemini_Websocket():
                             }
                             # Prep index for DataFrame
                         time_id = [curr_dt]
-                        print('GOGOGO')
+                        # print('GOGOGO')
                     if self.queue.full():
                         print("working")
                     
