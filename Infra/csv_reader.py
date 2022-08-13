@@ -1,7 +1,12 @@
 import pandas as pd
 import csv
 
-def csv_reader(file_path):
+def csv_reader(start_seconds, end_seconds):
+    file = str('RAW_DATA_' + start_seconds + 'to' + end_seconds + '_.csv')
+    df = pd.read_csv(file)
+    return df
+
+def csv_reader_path(file_path):
     """
     Reads a csv file and returns a pandas dataframe
     """
