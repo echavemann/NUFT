@@ -49,10 +49,10 @@ async def main(coins):
 
         # Stage 1: setting up all the websockets
         # input coins: a list of all coins
+        binance = bc.Binance_Websocket(q1, coins)
+        coinbase = cb.Coinbase_Websocket(
+            q1, 'wss://ws-feed.exchange.coinbase.com', coins, channels=["ticker"])
         for each_coin in coins:
-            binance = bc.Binance_Websocket(q1, each_coin)
-            coinbase = cb.Coinbase_Websocket(
-                q1, 'wss://ws-feed.exchange.coinbase.com', each_coin, channels=["ticker"])
             # kraken = kr.Kraken_Websocket(
             #     q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
             gemini = gm.Gemini_Websocket(q1, 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(each_coin), each_coin)
