@@ -1,4 +1,4 @@
-In order of exeution:
+In order of execution:
 
 Grid Trading
 Bolinger Bands

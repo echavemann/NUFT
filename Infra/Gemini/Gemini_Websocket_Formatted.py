@@ -52,14 +52,14 @@ class Gemini_Websocket():
                                 msg_data = {
                                     'exchange': 'gemini',
                                     'type': 'l2_updates',   
-                                    'symbol': temp_json['symbol'],
+                                    'ticker': temp_json['symbol'],
                                     'action': temp_json['changes'][0][0],
                                     'price': temp_json['changes'][0][1],
                                     'quantity': temp_json['changes'][0][2]
                                 }
                                 # Prep index for DataFrame
                                 time_id = [curr_dt]
-                                print('GOGOGO')
+                                
 
                     elif temp_json['type'] == 'trade':
                         curr_dt = datetime.utcfromtimestamp(temp_json["timestamp"]/1000).strftime('%Y-%m-%d %H:%M:%S')
@@ -74,7 +74,7 @@ class Gemini_Websocket():
                             }
                             # Prep index for DataFrame
                         time_id = [curr_dt]
-                        print('GOGOGO')
+                        # print('GOGOGO')
                     if self.queue.full():
                         print("working")
                     
@@ -106,4 +106,4 @@ async def main(coins):
 # Notice: Non-Async Wrapper is required for multiprocessing to run
 def run(coins = ["BTCUSD"]):
     asyncio.run(main(coins))
-run()
+# run()

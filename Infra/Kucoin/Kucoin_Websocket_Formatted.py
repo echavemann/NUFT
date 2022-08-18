@@ -14,7 +14,7 @@ coins = ['BTC-USDT']
 
 class Kucoin_Websocket():
 
-    def __init__(self, queue_1, queue_2, topics = []):
+    def __init__(self, queue_1, queue_2, lock, topics = []):
         self.token = ''
         self.queue_1 = queue_1
         self.queue_2 = queue_2
@@ -23,6 +23,7 @@ class Kucoin_Websocket():
         self.wsendpoint = ''
         self.timeout = 0
         self.topics = topics
+        self.lock = lock
         self.last_ping = time.time()
 
     #prereq function
@@ -103,8 +104,10 @@ class Kucoin_Websocket():
                     # If data is relevant, queue DataFrame
                     if msg_data != [] and time_id != []:
                         df = pd.DataFrame(data = msg_data, index = time_id)
-                        # print(df)
+                        print(df)
+                        self.lock.acquire()
                         self.queue_1.put(df)
+                        self.lock.release()
                     
         except Exception:
             # import traceback
@@ -135,7 +138,7 @@ class Kucoin_Websocket():
 #     asyncio.run(main())
 
 # run()
-q = multiprocessing.Queue()
-r = multiprocessing.Queue()
-ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
-ws._run_()
+# q = multiprocessing.Queue()
+# r = multiprocessing.Queue()
+# ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+# ws._run_()
