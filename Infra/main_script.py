@@ -1,7 +1,7 @@
 import concurrent.futures as cf
 import multiprocessing as mp
 import Kucoin.Kucoin_Websocket_Formatted as ks
-import Coinbase.Coinbase_Websocket as cb
+import Coinbase.Coinbase_Websocket_Formatted as cb
 import Gemini.Gemini_Websocket_Formatted as gm
 import Binance.Binance_Websocket_Formatted as bc
 # import Kraken.Kraken_Websocket as kr

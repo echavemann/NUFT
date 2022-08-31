@@ -14,7 +14,7 @@ coins = ['BTC-USDT']
 
 class Kucoin_Websocket():
 
-    def __init__(self, queue_1, queue_2, lock, topics = []):
+    def __init__(self, queue_1, queue_2, lock, coins = []):
         self.token = ''
         self.queue_1 = queue_1
         self.queue_2 = queue_2
@@ -22,7 +22,7 @@ class Kucoin_Websocket():
         self.connectid = ''
         self.wsendpoint = ''
         self.timeout = 0
-        self.topics = topics
+        self.coins = coins
         self.lock = lock
         self.last_ping = time.time()
 
@@ -49,11 +49,11 @@ class Kucoin_Websocket():
     async def _run(self):
         try:
             async with websockets.connect(self.wsendpoint, ping_interval=self.timeout, ping_timeout=None) as websocket:
-                for topic in self.topics:
+                for coin in self.coins:
                     await websocket.send(json.dumps({
                         "id": self.connectid,
                         "type": 'subscribe',
-                        "topic": topic,
+                        "topic": coin,
                         "response": True
                     }))
                 while True:
@@ -126,7 +126,7 @@ class Kucoin_Websocket():
 # async def main():
 #     q = multiprocessing.Queue()
 #     r = multiprocessing.Queue()
-#     ws = kucoin_websocket_raw(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+#     ws = kucoin_websocket_raw(q, r, coins = ['/market/ticker:all', '/market/level2:BTC-USDT'])
 #     #'/market/ticker:all',
 #     ws.get_ws()
 #     await ws.get_id()
@@ -140,5 +140,5 @@ class Kucoin_Websocket():
 # run()
 # q = multiprocessing.Queue()
 # r = multiprocessing.Queue()
-# ws = Kucoin_Websocket(q, r, topics = ['/market/ticker:all', '/market/level2:BTC-USDT'])
+# ws = Kucoin_Websocket(q, r, coins = ['/market/ticker:all', '/market/level2:BTC-USDT'])
 # ws._run_()
