@@ -16,26 +16,6 @@ import os
 
 # All functions imported need to be non-async! If you commit async functions, our code will not work, and we will have an emergency debugging in your 'honor'.
 
-# Helpers for saving
-def save_df(df):
-    print('saving')
-    dt = datetime.today()
-    seconds = dt.timestamp()
-    csv_name = 'RAW_DATA_' + seconds +  + '.csv'
-    df.to_csv(csv_name)
-    if os.path.isfile(csv_name):
-        print(csv_name + ' is saved on ' + os.getcwd())
-    else:
-        raise Exception('can not save file\n')
-
-def make_df(queue):
-    print('making')
-    df = pd.DataFrame()
-    row_list = queue.get()
-    for row in row_list:
-        pd.concat(df, row)
-    return df
-
 # Stage code:
 async def main(coins):
     with cf.ProcessPoolExecutor(max_workers=mp.cpu_count()) as executor:
