@@ -1,7 +1,7 @@
 import concurrent.futures as cf
 import multiprocessing as mp
-import Kucoin.Kucoin_Websocket_Formatted as ks
-import Coinbase.Coinbase_Websocket_Formatted as cb
+import Kucoin.Kucoin_Websocket as ks
+import Coinbase.Coinbase_Websocket as cb
 import Gemini.Gemini_Websocket_Formatted as gm
 import Binance.Binance_Websocket_Formatted as bc
 # import Kraken.Kraken_Websocket as kr
@@ -29,7 +29,7 @@ async def main(coins):
 
         # Stage 1: setting up all the websockets
         # input coins: a list of all coins
-        binance = bc.Binance_Websocket(q1, coins)
+        binance = bc.Binance_Websocket(q1, q2, coins)
         coinbase = cb.Coinbase_Websocket(
             q1, 'wss://ws-feed.exchange.coinbase.com', coins, channels=["ticker"])
         for each_coin in coins:
