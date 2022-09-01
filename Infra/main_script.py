@@ -56,7 +56,7 @@ async def main(coins):
             # kraken = kr.Kraken_Websocket(
             #     q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
             gemini = gm.Gemini_Websocket(q1, 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(each_coin), each_coin)
-            ks_ws = ks.Kucoin_Websocket(q1, q2, lock, topics=['/market/ticker:' + ','.join(each_coin), '/market/level2:' + ','.join(each_coin)])
+            ks_ws = ks.Kucoin_Websocket(q1, q2, lock, coins=['/market/ticker:' + ','.join(each_coin), '/market/level2:' + ','.join(each_coin)])
 
             # Stage 2: running all the websockets
             print('before')
