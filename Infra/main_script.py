@@ -3,7 +3,7 @@ import multiprocessing as mp
 import Kucoin.Kucoin_Websocket as ks
 import Coinbase.Coinbase_Websocket as cb
 import Gemini.Gemini_Websocket_Formatted as gm
-import Binance.Binance_Websocket_Formatted as bc
+import Binance.Binance_Websocket as bc
 # import Kraken.Kraken_Websocket as kr
 import pandas as pd
 import asyncio
