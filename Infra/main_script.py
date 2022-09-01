@@ -30,8 +30,7 @@ async def main(coins):
         # Stage 1: setting up all the websockets
         # input coins: a list of all coins
         binance = bc.Binance_Websocket(q1, q2, coins)
-        coinbase = cb.Coinbase_Websocket(
-            q1, 'wss://ws-feed.exchange.coinbase.com', coins, channels=["ticker"])
+        coinbase = cb.Coinbase_Websocket(q1, q2, coins)
         for each_coin in coins:
             # kraken = kr.Kraken_Websocket(
             #     q1, q2, topics=['/market/ticker:all', '/market/level2:BTC-USDT'])
