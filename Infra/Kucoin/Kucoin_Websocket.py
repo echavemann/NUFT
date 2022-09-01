@@ -10,8 +10,6 @@ from uuid import uuid4
 import pandas as pd
 import traceback
 
-coins = ['BTC-USDT']
-
 class Kucoin_Websocket():
 
     def __init__(self, queue_1, queue_2, coins = []):
@@ -28,9 +26,6 @@ class Kucoin_Websocket():
         for coin in coins:
             self.level_1.append('/market/ticker:' + coin)
             self.level_2.append('/market/level2:' + coin)
-        print(self.coins)
-        print(self.level_1)
-        print(self.level_2)
         self.last_ping = time.time()
 
     #prereq function
@@ -128,24 +123,8 @@ class Kucoin_Websocket():
     def _run_(self):
         asyncio.run(self._main())
 
-# made these functions
-# async def main():
-#     q = multiprocessing.Queue()
-#     r = multiprocessing.Queue()
-#     ws = kucoin_websocket_raw(q, r, coins = ['/market/ticker:all', '/market/level2:BTC-USDT'])
-#     #'/market/ticker:all',
-#     ws.get_ws()
-#     await ws.get_id()
-#     ws.get_ws()
-#     await ws._run()
-
-
-# def run():
-#     asyncio.run(main())
-
-# run()
-
-q = multiprocessing.Queue()
-r = multiprocessing.Queue()
-ws = Kucoin_Websocket(q, r, coins = ['BTC-USDT', 'ETH-USDT'])
-ws._run_()
+# Example Run
+# q = multiprocessing.Queue()
+# r = multiprocessing.Queue()
+# ws = Kucoin_Websocket(q, r, coins = ['BTC-USDT', 'ETH-USDT'])
+# ws._run_()
