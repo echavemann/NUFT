@@ -95,8 +95,8 @@ async def main(coins):
     cwr = Coinbase_Websocket(q, r, coins)
     await cwr.run()
 
-q = multiprocessing.Queue()
-r = multiprocessing.Queue()
-coins = ['BTC-USDT', 'ETH-USDT']
-cwr = Coinbase_Websocket(q, r,coins)
-cwr._run_()
+# q = multiprocessing.Queue()
+# r = multiprocessing.Queue()
+# coins = ['BTC-USDT', 'ETH-USDT']
+# cwr = Coinbase_Websocket(q, r,coins)
+# cwr._run_()
