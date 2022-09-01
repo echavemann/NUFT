@@ -22,7 +22,15 @@ class Kucoin_Websocket():
         self.connectid = ''
         self.wsendpoint = ''
         self.timeout = 0
-        self.coins = coins
+        self.level_1 = []
+        self.level_2 = []
+        self.coins = ['/market/ticker:' + ','.join(coins), '/market/level2:' + ','.join(coins)]
+        for coin in coins:
+            self.level_1.append('/market/ticker:' + coin)
+            self.level_2.append('/market/level2:' + coin)
+        print(self.coins)
+        print(self.level_1)
+        print(self.level_2)
         self.last_ping = time.time()
 
     #prereq function
@@ -67,12 +75,13 @@ class Kucoin_Websocket():
                     curr_dt = None
                     # If the request is a message, get the DateTime from the json
                     if temp_json['type'] == 'message':
-                        if temp_json['topic'] == '/market/ticker:all':
+                        if temp_json['topic'] in self.level_1:
                             curr_dt = datetime.utcfromtimestamp(temp_json['data']['time']/1000).strftime('%Y-%m-%d %H:%M:%S')
                             # Prep entry data for the DataFrame
+                            tick_name = temp_json['topic'].split("/")[2].split(':')[1]
                             msg_data = {
                                 'exchange': 'kucoin',
-                                'ticker': temp_json['subject'], 
+                                'ticker': tick_name, 
                                 'price': temp_json['data']['price'],
                             }
                             # Prep index for DataFrame
@@ -135,7 +144,8 @@ class Kucoin_Websocket():
 #     asyncio.run(main())
 
 # run()
-# q = multiprocessing.Queue()
-# r = multiprocessing.Queue()
-# ws = Kucoin_Websocket(q, r, coins = ['/market/ticker:all', '/market/level2:BTC-USDT'])
-# ws._run_()
+
+q = multiprocessing.Queue()
+r = multiprocessing.Queue()
+ws = Kucoin_Websocket(q, r, coins = ['BTC-USDT', 'ETH-USDT'])
+ws._run_()
