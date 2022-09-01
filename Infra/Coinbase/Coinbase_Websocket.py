@@ -15,12 +15,11 @@ from uuid import uuid4
 #Creating Coinbase Websocket Class 
 class Coinbase_Websocket():
     #Passing queue and other relevant information
-    def __init__(self, queue_1, queue_2, socket, coins = [], channels = []):
+    def __init__(self, queue_1, queue_2, coins = []):
         self.queue_1 = queue_1
         self.queue_2 = queue_2
-        self.socket = socket
-        self.coins= coins
-        self.channels = channels
+        self.coins = coins
+        self.channels = ['ticker', 'level2']
         self.sub_message = self.on_open()
    
     def on_open(self): # Generates a subscribe message to be converted into json to be sent to endpoint
@@ -32,7 +31,7 @@ class Coinbase_Websocket():
     
     async def run(self): #Full Asynchronous Run 
         try:
-            async with websockets.connect(self.socket, max_size = 1_000_000_000) as websocket:
+            async with websockets.connect('wss://ws-feed.exchange.coinbase.com', max_size = 1_000_000_000) as websocket:
                 await websocket.send(json.dumps(self.sub_message))
                 while True:
                     message = await websocket.recv()
@@ -93,15 +92,11 @@ class Coinbase_Websocket():
 async def main(coins): 
     q = multiprocessing.Queue()
     r = multiprocessing.Queue()
-    channels = ['ticker', 'level2']
-    socket = 'wss://ws-feed.exchange.coinbase.com'
-    cwr = Coinbase_Websocket(q, r, socket,coins,channels)
+    cwr = Coinbase_Websocket(q, r, coins)
     await cwr.run()
 
-# q = multiprocessing.Queue()
-# r = multiprocessing.Queue()
-# channels = ['ticker', 'level2']
-# coins = ['BTC-USDT', 'ETH-USDT']
-# socket = 'wss://ws-feed.exchange.coinbase.com'
-# cwr = Coinbase_Websocket(q, r, socket,coins,channels)
-# cwr._run_()
+q = multiprocessing.Queue()
+r = multiprocessing.Queue()
+coins = ['BTC-USDT', 'ETH-USDT']
+cwr = Coinbase_Websocket(q, r,coins)
+cwr._run_()
