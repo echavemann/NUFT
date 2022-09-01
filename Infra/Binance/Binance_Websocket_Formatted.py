@@ -11,8 +11,9 @@ from uuid import uuid4
 #Build Websocket Class
 class Binance_Websocket():
 
-    def __init__(self,queue,coins = []):
-        self.queue = queue
+    def __init__(self, q1, q2, coins = []):
+        self.q1 = q1
+        self.q2 = q2
         self.coins = coins
         self.params = self.generate_params(coins)
         self.request = self.generate_request()
@@ -62,13 +63,13 @@ class Binance_Websocket():
                         # Prep index for DataFrame
                             time_id = [curr_dt]
 
-                        if self.queue.full():
+                        if self.q1.full():
                             print('working')
 
                         if msg_data != [] and time_id != []:
                             df = pd.DataFrame(data = msg_data, index = time_id)
                             print(df)
-                            self.queue.put(df)
+                            self.q1.put(df)
 
         except Exception:
             import traceback
@@ -81,7 +82,8 @@ class Binance_Websocket():
 #Async Script Start
 async def main(coins):
     q = multiprocessing.Queue()
-    bwr = Binance_Websocket(q,coins=coins)
+    r = multiprocessing.Queue()
+    bwr = Binance_Websocket(q, r, coins = coins)
     # this example's getting market tickers for the specified coin types here, per the doc of binance, tickers come once every sec
     # if need sth else(like order book) just change generate_params's '@ticker' to whatever u want
     # or leave coins empty to get all market tickers
