@@ -3,65 +3,93 @@ import asyncio
 import websockets
 import multiprocessing
 import json
+import pandas
 import time
+from datetime import datetime
+
 # Creating Gemini websocket class
 class Gemini_Websocket():
 
-    def __init__(self, queue1, queue2, socket1, socket2, coins = []):
-        self.queue1 = queue1
-        self.queue2 = queue2
+    def __init__(self, queue, socket, coins = []):
+        self.queue = queue
         self.coins = coins
-        self.socket1 = socket1
-        self.socket2 = socket2
-        self.sub_message1 = self.on_openlvl1()
-        self.sub_message2 = self.on_openlvl2()
+        self.socket = socket
+        self.sub_message = self.on_open()
+        # self.update_message = self.update_response()
 
-    #generates a subscribe message to be converted into json to be sent to endpoint for lvl 1 market data
-    def on_openlvl1(self):
-        subscribe_message = {}
-        subscribe_message["request"] = "/v1/order/events"
-        subscribe_message["nonce"] = time.time()
-        return subscribe_message
-
-    #generates a subscribe message to be converted into json to be sent to endpoint for lvl 2 market data
-    def on_openlvl2(self):
+    #generates a subscribe message to be converted into json to be sent to endpoint
+    def on_open(self):
         subscribe_message = {}
         subscribe_message["type"] = "subscribe"
         subscribe_message["subscriptions"] = [{"name":"l2","symbols":self.coins}]
         return subscribe_message
     
-    async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into either queue1 and queue2
+    async def run(self): #on_message, sends json subscription to endpoint and awaits response to be put into queue
         try:
-            async with websockets.connect(self.socket2) as websocket:
-                await websocket.send(json.dumps(self.sub_message1))
-                await websocket.send(json.dumps(self.sub_message2))
-
+            async with websockets.connect(self.socket) as websocket:
+                await websocket.send(json.dumps(self.sub_message))
+                # await websocket.send(json.dumps(self.update_message))  #Takes around 20 seconds for update messages to show up...
                 while True:
-                    
-                    # await websocket.send(json.dumps(self.sub_message2))
-                    await websocket.send(json.dumps(self.sub_message1))
-                    receive = await websocket.recv()
-                    #convert response to json
-                    message = json.loads(receive)
-                    
-                    
-                    # distinguish lvl 2 data from the message
-                    if message.get("type") == "l2_updates":
-                        self.queue2.put(message)
-                        if self.queue2.full():
-                            pass
-                        print('Level 2 Received')
-                        print(message)
+                    ### 07/22/2022
+                    ### Formatting Stuff Starts Here
+                    # Receive Message
+                    message = await websocket.recv()
+                    #Convert message to json
+                    temp_json = json.loads(message)
+                    # Set variables that will be entered into DataFrame
+                    msg_data = []
+                    time_id = []
+                    curr_dt = None
 
-                    # distinguish lvl 1 data from the message
-                    elif message.get("type") == "update":
+                    # if the request is of type l2_updates (message for lvl2 market data), get the DateTime from the json
+                    if temp_json['type'] == 'l2_updates':
+                        if 'trades' in temp_json.keys():
+                        #check to see if timestamp is available to get
+                            if "timestamp" in temp_json.get("trades")[0].keys():
+                                curr_dt = datetime.fromtimestamp(time.time())  
+                                # print(temp_json)
+                                # curr_dt = datetime.utcfromtimestamp(temp_json.get("trades")[0].get("timestamp")/1000).strftime('%Y-%m-%d %H:%M:%S')
+                                msg_data = {
+                                    'exchange': 'gemini',
+                                    'type': 'l2_updates',   
+                                    'ticker': temp_json['symbol'],
+                                    'action': temp_json['changes'][0][0],
+                                    'price': temp_json['changes'][0][1],
+                                    'quantity': temp_json['changes'][0][2]
+                                }
+                                # Prep index for DataFrame
+                                time_id = [curr_dt]
+                                
 
-                        self.queue1.put(message)
-                        if self.queue1.full():
-                            pass
-                        print(message)
-                        print('Level 1 Received')
-
+                    elif temp_json['type'] == 'trade':
+                        curr_dt = datetime.utcfromtimestamp(temp_json["timestamp"]/1000).strftime('%Y-%m-%d %H:%M:%S')
+                        # print(temp_json)
+                        msg_data = {
+                                'exchange': 'Gemini',
+                                'type' : 'trade',
+                                'symbol': temp_json['symbol'],
+                                'action': temp_json['side'],
+                                'price': temp_json['price'],
+                                'quantity': temp_json['quantity']
+                            }
+                            # Prep index for DataFrame
+                        time_id = [curr_dt]
+                        # print('GOGOGO')
+                    if self.queue.full():
+                        print("working")
+                    
+                    if msg_data != [] and time_id != []:
+                        # Create DataFrame
+                        df = pandas.DataFrame(data = msg_data, index=time_id)
+                        print(df)
+                        # put the dataframe into the queue
+                        self.queue.put(df)
+                
+                        # self.queue.put(message)
+                        # if self.queue.full():
+                        #     pass
+                        # print('Gemini Data Received')
+                        # print(message)
         except Exception:
             import traceback
             print(traceback.format_exc())
@@ -70,19 +98,12 @@ class Gemini_Websocket():
         self.run()
     
 async def main(coins): 
-    q1 = multiprocessing.Queue()
-    q2 = multiprocessing.Queue()
-    socket1 = 'wss://api.gemini.com/v1/multimarketdata?symbols=' + ','.join(coins) 
-    socket2 = 'wss://api.gemini.com/v2/marketdata'
-
-    gws1 = Gemini_Websocket(q1, q2, socket1, socket2, coins)
-    gws2 = Gemini_Websocket(q2, q1, socket2, socket1, coins)
-    await gws1.run()
-    await gws2.run()
-    
+    q = multiprocessing.Queue()
+    socket = 'wss://api.gemini.com/v2/marketdata'
+    gws = Gemini_Websocket(q, socket, coins)
+    await gws.run()
 
 # Notice: Non-Async Wrapper is required for multiprocessing to run
-def run(coins = ["ETHUSD","ETHBTC"]):
+def run(coins = ["BTCUSD"]):
     asyncio.run(main(coins))
-
 run()
