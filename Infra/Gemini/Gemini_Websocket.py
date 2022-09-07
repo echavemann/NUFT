@@ -15,7 +15,7 @@ class Gemini_Websocket():
         self.queue_2 = queue_2
         self.coins = coins
         self.sub_msg_1 = self.on_open()[0]
-        self.sub_msg_1 = self.on_open[1]
+        # self.sub_msg_1 = self.on_open[1]
         # self.update_message = self.update_response()
 
     #generates a subscribe message to be converted into json to be sent to endpoint
