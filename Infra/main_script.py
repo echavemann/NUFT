@@ -49,6 +49,9 @@ async def main(coins):
 
         # Stage 1: setting up all the websockets
         # input coins: a list of all coins
+        binance = bc.Binance_Websocket(q1, q2, coins)
+        coinbase = cb.Coinbase_Websocket(q1, q2, coins)
+        ks_ws = ks.Kucoin_Websocket(q1, q2, coins)
         for each_coin in coins:
             binance = bc.Binance_Websocket(q1, each_coin)
             coinbase = cb.Coinbase_Websocket(
